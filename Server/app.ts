@@ -17,7 +17,7 @@ async function start() {
       'mongodb+srv://god:root@cluster0.llh3w.mongodb.net/myDataBase?retryWrites=true&w=majority'
     );
     app.listen(3100, () => {
-      console.log('started on port 3100');
+      console.log('started');
     });
   } catch (error) {
     process.exit(1);
