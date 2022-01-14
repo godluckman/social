@@ -88,6 +88,8 @@ const Auth = {
         accessToken,
         user: { ...user._doc, password: '' },
       });
+
+      
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
