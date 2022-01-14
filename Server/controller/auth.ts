@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import UserModel from '../model/userModel';
 
 const accessSecret = '123secretaccess';
@@ -12,7 +12,6 @@ const createRefreshToken: CallableFunction = (payload: object) =>
   jwt.sign(payload, refreshSecret, { expiresIn: '30d' });
 
 const Auth = {
-  // eslint-disable-next-line consistent-return
   register: async (req: Request, res: Response) => {
     try {
       const { fullName, userName, email, password, gender } = req.body;
@@ -56,14 +55,11 @@ const Auth = {
         user: { ...newUser._doc, password: '' },
       });
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return res.status(500).json({ msg: e.message });
+      return res.status(500).json({ msg: e });
     }
+    return null;
   },
-  // eslint-disable-next-line consistent-return
   login: async (req: Request, res: Response) => {
-    // eslint-disable-next-line no-empty
     try {
       const { email, password } = req.body;
       const user = await UserModel.findOne({ email }).populate(
@@ -73,32 +69,59 @@ const Auth = {
       if (!user) return res.status(400).json({ msg: 'Email does not exist' });
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ msg: 'Wrong password' });
-      res.json({ user });
+
+      const accessToken = createAccessToken({ id: user._id });
+      const refreshToken = createRefreshToken({ id: user._id });
+
+      res.cookie('refreshtoken', refreshToken, {
+        httpOnly: true,
+        path: '/api/refresh_token',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+
+      res.json({
+        msg: 'Logged in',
+        accessToken,
+        user: { ...user._doc, password: '' },
+      });
+
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return res.status(500).json({ msg: e.message });
+      return res.status(500).json({ msg: e });
     }
+    return null;
   },
-  // eslint-disable-next-line consistent-return
   logout: async (req: Request, res: Response) => {
-    // eslint-disable-next-line no-empty
     try {
+      res.clearCookie('refreshtoken', { path: '/api/refresh_token' });
+      return res.json({ msg: 'Logged out' });
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return res.status(500).json({ msg: e.message });
+      return res.status(500).json({ msg: e });
     }
   },
-  // eslint-disable-next-line consistent-return
   generateAccessToken: async (req: Request, res: Response) => {
-    // eslint-disable-next-line no-empty
     try {
+      const refreshToken = req.cookies.refreshtoken;
+      if (!refreshToken)
+        return res.status(400).json({ msg: 'You must log in' });
+      jwt.verify(
+        refreshToken,
+        refreshSecret,
+        async (err: VerifyErrors | null, result: JwtPayload | undefined) => {
+          if (err) return res.status(400).json({ msg: 'You must log in' });
+
+          const user = await UserModel.findById(result?.id)
+            .select('-password')
+            .populate('followers following', '-password');
+          if (!user) return res.status(400).json({ msg: 'Does not exist' });
+          const accessToken = createAccessToken({ id: result?._id });
+          res.json({ accessToken, user });
+          return null;
+        }
+      );
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return res.status(500).json({ msg: e.message });
+      return res.status(500).json({ msg: e });
     }
+    return null;
   },
 };
 
