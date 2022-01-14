@@ -110,6 +110,24 @@ const Auth = {
   generateAccessToken: async (req: Request, res: Response) => {
     // eslint-disable-next-line no-empty
     try {
+      const refreshToken = req.cookies.refreshtoken;
+      if (!refreshToken)
+        return res.status(400).json({ msg: 'You must log in' });
+      jwt.verify(
+        refreshToken,
+        refreshSecret,
+        // eslint-disable-next-line consistent-return
+        async (err: any, result: any): Promise<any> => {
+          if (err) return res.status(400).json({ msg: 'You must log in' });
+
+          const user = await UserModel.findById(result.id)
+            .select('-password')
+            .populate('followers following', '-password');
+          if (!user) return res.status(400).json({ msg: 'Does not exist' });
+          const accessToken = createAccessToken({ id: result._id });
+          res.json({ accessToken, user });
+        }
+      );
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
