@@ -1,6 +1,15 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import UserModel from '../model/userModel';
+
+const accessSecret = '123secretaccess';
+const refreshSecret = 'secretrefresh123';
+
+const createAccessToken: CallableFunction = (payload: object) =>
+  jwt.sign(payload, accessSecret, { expiresIn: '1d' });
+const createRefreshToken: CallableFunction = (payload: object) =>
+  jwt.sign(payload, refreshSecret, { expiresIn: '30d' });
 
 const Auth = {
   // eslint-disable-next-line consistent-return
@@ -29,9 +38,23 @@ const Auth = {
         password: passwordHash,
         gender,
       });
-      // const accessToken = createAccessToken({ id: newUser._id});
 
-      res.json({ msg: 'Registered', newUser });
+      const accessToken = createAccessToken({ id: newUser._id });
+      const refreshToken = createRefreshToken({ id: newUser._id });
+
+      res.cookie('refreshtoken', refreshToken, {
+        httpOnly: true,
+        path: '/api/refresh_token',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+
+      await newUser.save();
+
+      res.json({
+        msg: 'Registered',
+        accessToken,
+        user: { ...newUser._doc, password: '' },
+      });
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore

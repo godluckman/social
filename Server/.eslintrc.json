@@ -28,6 +28,7 @@
   },
   "rules": {
     "prettier/prettier": "error",
+    "no-underscore-dangle": [0, { "allow": [] }],
     "import/extensions": [
       "error",
       "ignorePackages",
