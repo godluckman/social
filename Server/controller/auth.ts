@@ -73,7 +73,23 @@ const Auth = {
       if (!user) return res.status(400).json({ msg: 'Email does not exist' });
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ msg: 'Wrong password' });
-      res.json({ user });
+
+      const accessToken = createAccessToken({ id: user._id });
+      const refreshToken = createRefreshToken({ id: user._id });
+
+      res.cookie('refreshtoken', refreshToken, {
+        httpOnly: true,
+        path: '/api/refresh_token',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+
+      res.json({
+        msg: 'Logged in',
+        accessToken,
+        user: { ...user._doc, password: '' },
+      });
+
+      
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
