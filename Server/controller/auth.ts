@@ -88,8 +88,6 @@ const Auth = {
         accessToken,
         user: { ...user._doc, password: '' },
       });
-
-      
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -100,6 +98,8 @@ const Auth = {
   logout: async (req: Request, res: Response) => {
     // eslint-disable-next-line no-empty
     try {
+      res.clearCookie('refreshtoken', { path: '/api/refresh_token' });
+      return res.json({ msg: 'Logged out' });
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
