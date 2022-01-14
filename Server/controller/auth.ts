@@ -84,6 +84,7 @@ const Auth = {
         accessToken,
         user: { ...user._doc, password: '' },
       });
+
     } catch (e) {
       return res.status(500).json({ msg: e });
     }
