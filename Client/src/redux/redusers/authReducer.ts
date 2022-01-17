@@ -1,4 +1,4 @@
-import { TYPES } from '../actions/authAction';
+import allTypes from '../actions/allTypes';
 
 const initialState = {};
 
@@ -7,7 +7,7 @@ const authReducer = (
   action: { type: string; payload: object }
 ) => {
   switch (action.type) {
-    case TYPES.AUTH:
+    case allTypes.AUTH:
       return action.payload;
     default:
       return state;
