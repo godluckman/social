@@ -1,12 +1,18 @@
 import React from 'react';
-import { useLocation, useParams, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import NotFound from './components/notFound';
 
-const generatePage = (pageName: string, location: object) => (
-  <Navigate to={pageName} state={{ from: location }} replace />
-);
+const generatePage = (pageName: string) => {
+  // eslint-disable-next-line import/no-dynamic-require,global-require,@typescript-eslint/no-var-requires
+  const component = () => require(`./components/${pageName}`).default;
+  try {
+    return React.createElement(component());
+  } catch (err) {
+    return <NotFound />;
+  }
+};
 
 const PageRender = () => {
-  const location = useLocation();
   const { page, id } = useParams();
   let pageName = '';
   if (id) {
@@ -14,8 +20,7 @@ const PageRender = () => {
   } else {
     pageName = `${page}`;
   }
-  console.log(pageName);
-  return generatePage(pageName, location);
+  return generatePage(pageName);
 };
 
 export default PageRender;
