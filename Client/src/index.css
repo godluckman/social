@@ -1,4 +1,5 @@
 @import url('styles/auth.css');
+@import url('styles/loading.css');
 
 * {
     padding: 0;

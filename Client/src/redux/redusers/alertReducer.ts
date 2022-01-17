@@ -1,17 +1,17 @@
-import { TYPES } from '../actions/notifyAcrion';
+import allTypes from '../actions/allTypes';
 
 const initialState = {};
 
-const notifyReducer = (
+const alertReducer = (
   state = initialState,
   action: { type: string; payload: object }
 ) => {
   switch (action.type) {
-    case TYPES.NOTIFY:
+    case allTypes.ALERT:
       return action.payload;
     default:
       return state;
   }
 };
 
-export default notifyReducer;
+export default alertReducer;
