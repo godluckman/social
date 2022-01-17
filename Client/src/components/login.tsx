@@ -7,6 +7,7 @@ const Login = () => {
   const initialState = { email: '', password: '' };
   const [userData, setUserData] = useState(initialState);
   const { email, password } = userData;
+  const [typePass, setTypePass] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -44,14 +45,22 @@ const Login = () => {
         <div className='mb-3'>
           <label htmlFor='exampleInputPassword1' className='form-label'>
             Password
-            <input
-              type='password'
-              className='form-control'
-              id='exampleInputPassword1'
-              onChange={changeHandler}
-              value={password}
-              name='password'
-            />
+            <div className='pass'>
+              <input
+                type={typePass ? 'text' : 'password'}
+                className='form-control'
+                id='exampleInputPassword1'
+                onChange={changeHandler}
+                value={password}
+                name='password'
+              />
+              <small
+                onClick={() => setTypePass(!typePass)}
+                onKeyDown={() => setTypePass(!typePass)}
+              >
+                {typePass ? 'Hide' : 'Show'}
+              </small>
+            </div>
           </label>
         </div>
         <button
