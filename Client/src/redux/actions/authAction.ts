@@ -66,3 +66,17 @@ export const register = (data: IErr) => async (dispatch: CallableFunction) => {
   }
   return null;
 };
+
+export const logout = () => async (dispatch: CallableFunction) => {
+  try {
+    localStorage.removeItem('firstLogin');
+    // @ts-ignore
+    await postDataApi('logout');
+    window.location.href = '/';
+  } catch (err: any) {
+    dispatch({
+      type: AllTypes.ALERT,
+      payload: { error: err.response.data.msg },
+    });
+  }
+};

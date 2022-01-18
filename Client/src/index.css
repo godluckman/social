@@ -27,3 +27,7 @@
     margin: auto;
 }
 
+.container-fluid a{
+    text-decoration: none;
+}
+

@@ -8,6 +8,7 @@ import Register from './components/register';
 import Home from './components/home';
 import { refreshToken } from './redux/actions/authAction';
 import Alert from './components/notify/notify';
+import Header from './components/header';
 
 interface INotify extends Object {
   token: string;
@@ -31,6 +32,7 @@ const App = () => {
       <input type='checkbox' id='theme' />
       <div className='App'>
         <div className='main'>
+          {auth.token && <Header />}
           <Routes>
             <Route path='/' element={auth.token ? <Home /> : <Login />} />
             <Route path='/register' element={<Register />} />
