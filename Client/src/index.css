@@ -1,5 +1,6 @@
 @import url('styles/auth.css');
 @import url('styles/loading.css');
+@import url('styles/header.css');
 
 * {
     padding: 0;
@@ -27,3 +28,16 @@
     margin: auto;
 }
 
+.container-fluid a{
+    text-decoration: none;
+}
+
+img{
+    object-fit: cover;
+}
+
+.avatar{
+    width: 1.8rem;
+    height: 1.8rem;
+    padding-bottom: 8px;
+}

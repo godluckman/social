@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/actions/authAction';
 
 const Login = () => {
@@ -10,6 +10,22 @@ const Login = () => {
   const [typePass, setTypePass] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  interface INotify extends Object {
+    token: string;
+  }
+  interface IState extends DefaultRootState {
+    auth: INotify;
+  }
+
+  const { auth } = useSelector((state: IState) => state);
+
+  useEffect(() => {
+    if (auth.token) {
+      navigate('/', { replace: true });
+    }
+  }, [auth.token, navigate]);
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

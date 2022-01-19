@@ -39,6 +39,8 @@
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/default-param-last": "off",
     "react/react-in-jsx-scope": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
     "react/jsx-filename-extension": [
       2,
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
