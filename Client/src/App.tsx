@@ -9,6 +9,7 @@ import Home from './components/home';
 import { refreshToken } from './redux/actions/authAction';
 import Alert from './components/notify/notify';
 import Header from './components/header';
+import PrivateRouter from './privateRoter';
 
 interface INotify extends Object {
   token: string;
@@ -35,9 +36,12 @@ const App = () => {
           {auth.token && <Header />}
           <Routes>
             <Route path='/' element={auth.token ? <Home /> : <Login />} />
+            <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
-            <Route path='/:page' element={<PageRender />} />
-            <Route path='/:page/:id' element={<PageRender />} />
+            <Route path='/' element={<PrivateRouter />}>
+              <Route path='/:page' element={<PageRender />} />
+              <Route path='/:page/:id' element={<PageRender />} />
+            </Route>
             <Route path='*' element={<NotFound />} />
           </Routes>
         </div>
