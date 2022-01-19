@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { getDataApi } from '../redux/utils/fetchData';
+import allTypes from '../redux/actions/allTypes';
+import UserCard from './userCard';
 
 interface IState extends DefaultRootState {
   auth: { token: string };
@@ -11,8 +15,19 @@ const Search = () => {
 
   const { auth } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
-  const [load, setLoad] = useState(false);
-  console.log(auth, dispatch, load, setLoad, setUsers);
+
+  useEffect(() => {
+    if (search && auth.token) {
+      getDataApi(`search?userName=${search}`, auth.token)
+        .then((res) => setUsers(res.data.users))
+        .catch((err) => {
+          dispatch({
+            type: allTypes.ALERT,
+            payload: { error: err.response.data.msg },
+          });
+        });
+    }
+  }, [search, auth.token, dispatch]);
   return (
     <form className='searchForm'>
       <input
@@ -36,6 +51,13 @@ const Search = () => {
       >
         close
       </span>
+      <div className='users'>
+        {users.map((user: any) => (
+          <Link key={user._id} to={`/profile/${user._id}`}>
+            <UserCard />
+          </Link>
+        ))}
+      </div>
     </form>
   );
 };
