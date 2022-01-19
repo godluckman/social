@@ -3,7 +3,7 @@ import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getDataApi } from '../redux/utils/fetchData';
 import allTypes from '../redux/actions/allTypes';
-import UserCard from './userCard';
+import UserCard, { IUser } from './userCard';
 
 interface IState extends DefaultRootState {
   auth: { token: string };
@@ -17,7 +17,7 @@ const Search = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (search && auth.token) {
+    if (search) {
       getDataApi(`search?userName=${search}`, auth.token)
         .then((res) => setUsers(res.data.users))
         .catch((err) => {
@@ -26,8 +26,16 @@ const Search = () => {
             payload: { error: err.response.data.msg },
           });
         });
+    } else {
+      setUsers([]);
     }
   }, [search, auth.token, dispatch]);
+
+  const handleClose = () => {
+    setSearch('');
+    setUsers([]);
+  };
+
   return (
     <form className='searchForm'>
       <input
@@ -47,16 +55,23 @@ const Search = () => {
       </div>
       <span
         className='material-icons closeSearch'
-        style={{ opacity: users.length === 0 ? 0 : 1 }}
+        style={{ opacity: search.length === 0 ? 0 : 1 }}
+        onClick={handleClose}
+        onKeyUp={handleClose}
       >
         close
       </span>
       <div className='users'>
-        {users.map((user: any) => (
-          <Link key={user._id} to={`/profile/${user._id}`}>
-            <UserCard />
-          </Link>
-        ))}
+        {search &&
+          users.map((user: IUser) => (
+            <Link
+              key={user._id}
+              to={`/profile/${user._id}`}
+              onClick={handleClose}
+            >
+              <UserCard user={user} />
+            </Link>
+          ))}
       </div>
     </form>
   );
