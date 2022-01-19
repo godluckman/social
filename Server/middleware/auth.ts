@@ -2,16 +2,14 @@ import jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 import UserModel from '../model/userModel';
 
-interface IReq extends Request {
-  user: object;
-}
-
-const auth = async (req: IReq, res: Response, next: NextFunction) => {
+const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.header('Authorization');
     if (!token) return res.status(400).json({ msg: 'Invalid Auth.' });
     const decoded: any = jwt.verify(token, '123secretaccess');
     if (!decoded) return res.status(400).json({ msg: 'Invalid Auth.' });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     req.user = await UserModel.findOne({ _id: decoded.id });
     next();
   } catch (e: any) {
