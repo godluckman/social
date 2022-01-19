@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/actions/authAction';
 import allTypes from '../redux/actions/allTypes';
+import Avatar from './avatar';
 
 const Header = () => {
   const navLinks = [
@@ -13,15 +14,14 @@ const Header = () => {
 
   interface INotify extends Object {
     token: string;
-    user: { _id: string };
+    user: { _id: string; avatar: string };
   }
   interface IState extends DefaultRootState {
     auth: INotify;
-    theme: any;
-    notify: any;
+    theme: string;
   }
 
-  const { auth, theme, notify } = useSelector((state: IState) => state);
+  const { auth, theme } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
   return (
     <nav className='navbar navbar-expand-lg navbar-light bg-light justify-content-between align-middle'>
@@ -31,7 +31,7 @@ const Header = () => {
           className='logo'
           onClick={() => window.scrollTo({ top: 0 })}
         >
-          <h1 className='navbar-brand text-uppercase p-0 m-0'>V-Network</h1>
+          <h1 className='navbar-brand text-uppercase p-0 m-0'>NSocial</h1>
         </Link>
         <div className='menu'>
           <ul className='navbar-nav flex-row mb-2 mb-lg-0'>
@@ -59,7 +59,7 @@ const Header = () => {
                 data-bs-toggle='dropdown'
                 aria-expanded='false'
               >
-                User
+                <Avatar src={auth.user.avatar} />
               </div>
               <ul className='dropdown-menu' aria-labelledby='navbarDropdown'>
                 <li>
@@ -71,7 +71,6 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
-                  {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
                   <label
                     htmlFor='theme'
                     className='dropdown-item'
