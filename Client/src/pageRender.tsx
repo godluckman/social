@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { DefaultRootState, useSelector } from 'react-redux';
 import NotFound from './components/notFound';
 
 const generatePage = (pageName: string) => {
@@ -14,11 +15,20 @@ const generatePage = (pageName: string) => {
 
 const PageRender = () => {
   const { page, id } = useParams();
+  interface INotify extends Object {
+    token: string;
+  }
+  interface IState extends DefaultRootState {
+    auth: INotify;
+  }
+  const { auth } = useSelector((state: IState) => state);
   let pageName = '';
-  if (id) {
-    pageName = `${page}/[id]`;
-  } else {
-    pageName = `${page}`;
+  if (auth.token) {
+    if (id) {
+      pageName = `${page}/[id]`;
+    } else {
+      pageName = `${page}`;
+    }
   }
   return generatePage(pageName);
 };
