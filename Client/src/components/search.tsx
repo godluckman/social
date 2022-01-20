@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getDataApi } from '../redux/utils/fetchData';
@@ -12,24 +12,26 @@ interface IState extends DefaultRootState {
 const Search = () => {
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
+  const [load, setLoad] = useState(false);
 
   const { auth } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (search) {
-      getDataApi(`search?userName=${search}`, auth.token)
-        .then((res) => setUsers(res.data.users))
-        .catch((err) => {
-          dispatch({
-            type: allTypes.ALERT,
-            payload: { error: err.response.data.msg },
-          });
-        });
-    } else {
-      setUsers([]);
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!search) return;
+    try {
+      setLoad(true);
+      const res = await getDataApi(`search?userName=${search}`, auth.token);
+      setUsers(res.data.users);
+      setLoad(false);
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
     }
-  }, [search, auth.token, dispatch]);
+  };
 
   const handleClose = () => {
     setSearch('');
@@ -37,7 +39,7 @@ const Search = () => {
   };
 
   return (
-    <form className='searchForm'>
+    <form className='searchForm' onSubmit={handleSearch}>
       <input
         type='text'
         name='search'
@@ -61,6 +63,17 @@ const Search = () => {
       >
         close
       </span>
+      <button type='submit' style={{ display: 'none' }}>
+        Search
+      </button>
+      {load && (
+        <div
+          className='spinner-border text-secondary spinner-border-sm loading'
+          role='status'
+        >
+          <span className='visually-hidden'>Loading...</span>
+        </div>
+      )}
       <div className='users'>
         {search &&
           users.map((user: IUser) => (
