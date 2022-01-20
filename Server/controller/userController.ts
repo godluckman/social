@@ -15,6 +15,16 @@ const userController = {
     }
     return null;
   },
+  getUser: async (req: Request, res: Response) => {
+    try {
+      const user = await UserModel.findById(req.params.id).select('-password');
+      if (!user) return res.status(400).json({ msg: 'User does not exist.' });
+      res.json({ user });
+    } catch (e: any) {
+      return res.status(500).json({ msg: e.message });
+    }
+    return null;
+  },
 };
 
 export default userController;
