@@ -2,6 +2,7 @@
 @import url('styles/loading.css');
 @import url('styles/header.css');
 @import url('styles/avatar.css');
+@import url('styles/profile.css');
 
 * {
     padding: 0;
