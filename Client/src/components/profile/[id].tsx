@@ -27,7 +27,7 @@ const Profile = () => {
   return (
     <div className='profile'>
       {profile.loading ? (
-        <div className='spinner-border loading' role='status'>
+        <div className='spinner-border loading mx-auto my-4' role='status'>
           <span className='visually-hidden'>Loading...</span>
         </div>
       ) : (

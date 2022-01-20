@@ -14,6 +14,8 @@ export interface IUser {
   address: string;
   email: string;
   story: string;
+  mobile: string;
+  gender: string;
   followers: [];
   following: [];
 }

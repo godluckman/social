@@ -64,6 +64,11 @@
     border-radius: 5px;
     margin: 20px auto;
 }
+
+.form-group label{
+    width: 100%;
+}
+
 .edit_profile .btn_close{
     position: absolute;
     top: 1rem;
@@ -165,6 +170,19 @@
     margin: 0 25px;
     opacity: 0.5;
 }
+
+.profile_tab button{
+    outline: none;
+    border: none;
+    background: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 5px 20px;
+    margin: 0 25px;
+    opacity: 0.5;
+}
+
 .profile_tab button.active{
     border-top: 1px solid #000;
     border-bottom: 1px solid #000;
