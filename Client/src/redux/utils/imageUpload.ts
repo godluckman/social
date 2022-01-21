@@ -1,4 +1,6 @@
-const checkImage = (file: File) => {
+import axios from 'axios';
+
+export const checkImage = (file: File) => {
   let err = '';
   if (!file) {
     err = 'File does not exist ';
@@ -14,4 +16,14 @@ const checkImage = (file: File) => {
   }
   return err;
 };
-export default checkImage;
+
+export const imageUpload = async (image: any) => {
+  const formData = new FormData();
+  formData.append('image', image);
+  const res = await axios.post('/api/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return res.data;
+};

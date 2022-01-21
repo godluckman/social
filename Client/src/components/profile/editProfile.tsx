@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
-import { IUser } from '../../redux/actions/profileAction';
+import { IUser, updateProfileUser } from '../../redux/actions/profileAction';
 import allTypes from '../../redux/actions/allTypes';
-import checkImage from '../../redux/utils/imageUpload';
+import { checkImage } from '../../redux/utils/imageUpload';
 
 const EditProfile = ({ setOnEdit }: any) => {
   const initState = {
+    _id: '',
     fullName: '',
     mobile: '',
     address: '',
     story: '',
     gender: '',
+    avatar:
+      'https://cdn4.iconfinder.com/data/icons/music-ui-solid-24px/24/user_account_profile-2-256.png',
+    userName: '',
+    email: '',
+    followers: [''],
+    following: [''],
   };
   const [userData, setUserData] = useState(initState);
   const { fullName, mobile, address, story, gender } = userData;
 
-  const [avatar, setAvatar] = useState('');
+  const [avatar, setAvatar] = useState<File | string>('');
 
   interface INotify extends Object {
     token: string;
@@ -34,18 +41,14 @@ const EditProfile = ({ setOnEdit }: any) => {
     setUserData(auth.user);
   }, [auth.user]);
 
-  const changeAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // @ts-ignore // TODO
-    const file = e.target.files[0];
-
+  const changeAvatar = (e: any) => {
+    const file = e.target.files![0];
     const err = checkImage(file);
     if (err)
       return dispatch({
         type: allTypes.ALERT,
         payload: { error: err },
       });
-
-    // @ts-ignore // TODO
     setAvatar(file);
     return null;
   };
@@ -59,6 +62,11 @@ const EditProfile = ({ setOnEdit }: any) => {
     setUserData({ ...userData, [name]: value });
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(updateProfileUser({ userData, avatar, auth }));
+  };
+
   return (
     <div className='edit_profile'>
       <button
@@ -68,11 +76,15 @@ const EditProfile = ({ setOnEdit }: any) => {
       >
         Close
       </button>
-      <form>
+      <form onSubmit={handleSubmit} encType='multipart/form-data'>
         <div className='info_avatar'>
           <img
             alt='avatar'
-            src={avatar ? auth.user.avatar : auth.user.avatar}
+            src={
+              typeof avatar !== 'string'
+                ? URL.createObjectURL(avatar)
+                : auth.user.avatar
+            }
             style={{ filter: theme ? 'invert(1)' : 'invert(0)' }}
           />
           <span>

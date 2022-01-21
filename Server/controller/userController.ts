@@ -25,6 +25,31 @@ const userController = {
     }
     return null;
   },
+  updateUser: async (req: Request, res: Response) => {
+    try {
+      const { avatar, fullName, mobile, address, story, gender } = req.body;
+      console.log(avatar);
+      if (!fullName)
+        return res.status(400).json({ msg: 'Please add your full name.' });
+
+      await UserModel.findOneAndUpdate(
+        { _id: req.body._id },
+        {
+          avatar,
+          fullName,
+          mobile,
+          address,
+          story,
+          gender,
+        }
+      );
+      console.log('updateUser userController');
+      res.json({ msg: 'Update Success!' });
+    } catch (e: any) {
+      return res.status(500).json({ msg: e.message });
+    }
+    return null;
+  },
 };
 
 export default userController;

@@ -44,6 +44,7 @@ const Search = () => {
         type='text'
         name='search'
         id='search'
+        title='Enter to Search'
         value={search}
         onChange={(event) =>
           setSearch(event.target.value.toLowerCase().replace(/ /g, ''))

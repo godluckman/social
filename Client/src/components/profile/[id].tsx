@@ -13,8 +13,8 @@ interface INotify extends Object {
     address: string;
     email: string;
     story: string;
-    followers: [];
-    following: [];
+    followers: string[];
+    following: string[];
   };
 }
 interface IState extends DefaultRootState {
