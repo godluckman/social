@@ -1,24 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Avatar from '../avatar';
 import { getProfileUsers, IUser } from '../../redux/actions/profileAction';
 import EditProfile from './editProfile';
 import FollowBtn from '../followBtn';
 
-const Info = () => {
+const Info = ({ auth, profile }: any) => {
   const { id } = useParams();
 
-  interface INotify {
-    token: string;
-    user: IUser;
-  }
-  interface IState extends DefaultRootState {
-    auth: INotify;
-    profile: { users: IUser[] };
-  }
-
-  const { auth, profile } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
   const [userData, setUserData] = useState<IUser[]>([]);
   const [onEdit, setOnEdit] = useState(false);
@@ -31,7 +21,7 @@ const Info = () => {
       const newData = profile.users.filter((user: IUser) => user._id === id);
       setUserData(newData);
     }
-  }, [id, auth, dispatch, profile.users]);
+  }, [id, auth, dispatch, profile.users, profile]);
 
   return (
     <div className='info'>

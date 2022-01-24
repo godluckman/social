@@ -1,16 +1,17 @@
 import { getDataApi, patchDataApi } from '../utils/fetchData';
-import allTypes from './allTypes';
+import { allTypes, deleteData } from './allTypes';
 import { imageUpload } from '../utils/imageUpload';
 
 export const profileTypes = {
   LOADING: 'LOADING',
   GET_USER: 'GET_USER',
   FOLLOW: 'FOLLOW',
+  UNFOLLOW: 'UNFOLLOW',
 };
 
 export interface IUser {
   _id: string;
-  avatar: any;
+  avatar: string;
   userName: string;
   fullName: string;
   address: string;
@@ -94,7 +95,6 @@ export const updateProfileUser =
         },
         auth.token
       );
-      console.log(res);
       dispatch({
         type: allTypes.AUTH,
         payload: {
@@ -123,4 +123,31 @@ export const follow =
   async (dispatch: CallableFunction) => {
     const newUser = { ...user, followers: [...user.followers, auth.user] };
     dispatch({ type: profileTypes.FOLLOW, payload: newUser });
+    dispatch({
+      type: allTypes.AUTH,
+      payload: {
+        ...auth,
+        user: { ...auth.user, following: [...auth.user.following, newUser] },
+      },
+    });
+  };
+
+export const unfollow =
+  ({ users, user, auth }: IFollowProps) =>
+  async (dispatch: CallableFunction) => {
+    const newUser = {
+      ...user,
+      followers: deleteData(user.followers, auth.user._id),
+    };
+    dispatch({ type: profileTypes.UNFOLLOW, payload: newUser });
+    dispatch({
+      type: allTypes.AUTH,
+      payload: {
+        ...auth,
+        user: {
+          ...auth.user,
+          following: deleteData(auth.user.following, newUser._id),
+        },
+      },
+    });
   };

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Posts = () => {
-  console.log('');
+  const a = 'a';
   return (
     <div>
       <h1>Posts</h1>

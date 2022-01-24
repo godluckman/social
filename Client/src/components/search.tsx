@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getDataApi } from '../redux/utils/fetchData';
-import allTypes from '../redux/actions/allTypes';
+import { allTypes } from '../redux/actions/allTypes';
 import UserCard, { IUser } from './userCard';
 
 interface IState extends DefaultRootState {

@@ -1,4 +1,5 @@
 import { profileTypes } from '../actions/profileAction';
+import { editData } from '../actions/allTypes';
 
 const initialState = {
   loading: false,
@@ -8,7 +9,13 @@ const initialState = {
 
 const profileReducer = (
   state = initialState,
-  action: { type: string; payload: { user: string } }
+  action: {
+    type: string;
+    payload: {
+      _id: string;
+      user: string;
+    };
+  }
 ) => {
   switch (action.type) {
     case profileTypes.LOADING:
@@ -17,10 +24,13 @@ const profileReducer = (
       return { ...state, users: [...state.users, action.payload.user] };
     case profileTypes.FOLLOW:
       return {
-        // ...state,
-        // users: state.users.map((user) =>
-        //   user._id === action.payload ? action.payload : user
-        // ),
+        ...state,
+        users: editData(state.users, action.payload._id, action.payload),
+      };
+    case profileTypes.UNFOLLOW:
+      return {
+        ...state,
+        users: editData(state.users, action.payload._id, action.payload),
       };
     default:
       return state;

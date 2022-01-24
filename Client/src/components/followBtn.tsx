@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
-import { follow, IUser } from '../redux/actions/profileAction';
+import { follow, IUser, unfollow } from '../redux/actions/profileAction';
 
 interface Prop {
   user: IUser;
@@ -21,7 +21,13 @@ const FollowBtn = ({ user }: Prop) => {
   const { auth, profile } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (auth.user.following.find((item: any) => item._id === user._id))
+      setFollowed(true);
+  }, [auth.user.following, user._id]);
+
   const handleUnFollow = async () => {
+    await dispatch(unfollow({ users: profile.users, user, auth }));
     setFollowed(false);
   };
   const handleFollow = async () => {

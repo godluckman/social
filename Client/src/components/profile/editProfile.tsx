@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import { IUser, updateProfileUser } from '../../redux/actions/profileAction';
-import allTypes from '../../redux/actions/allTypes';
+import { allTypes } from '../../redux/actions/allTypes';
 import { checkImage } from '../../redux/utils/imageUpload';
 
 const EditProfile = ({ setOnEdit }: any) => {

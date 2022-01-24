@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/actions/authAction';
-import allTypes from '../redux/actions/allTypes';
+import { allTypes } from '../redux/actions/allTypes';
 import Avatar from './avatar';
 import Search from './search';
 

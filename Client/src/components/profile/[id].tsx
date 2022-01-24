@@ -18,11 +18,11 @@ interface INotify extends Object {
 }
 interface IState extends DefaultRootState {
   auth: INotify;
-  profile: { loading: boolean };
+  profile: any;
 }
 
 const Profile = () => {
-  const { profile } = useSelector((state: IState) => state);
+  const { profile, auth } = useSelector((state: IState) => state);
   return (
     <div className='profile'>
       {profile.loading ? (
@@ -30,7 +30,7 @@ const Profile = () => {
           <span className='visually-hidden'>Loading...</span>
         </div>
       ) : (
-        <Info />
+        <Info profile={profile} auth={auth} />
       )}
       <Posts />
     </div>
