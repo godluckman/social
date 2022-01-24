@@ -1,4 +1,3 @@
-import React from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 import Info from './info';
 import Posts from './posts';

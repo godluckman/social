@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { DefaultRootState, useSelector } from 'react-redux';
 import NotFound from './components/notFound';
@@ -13,7 +13,7 @@ const generatePage = (pageName: string) => {
   }
 };
 
-const PageRender = () => {
+const PageRender: FC = () => {
   const { page, id } = useParams();
   interface INotify extends Object {
     token: string;

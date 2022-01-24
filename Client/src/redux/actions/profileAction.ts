@@ -5,6 +5,7 @@ import { imageUpload } from '../utils/imageUpload';
 export const profileTypes = {
   LOADING: 'LOADING',
   GET_USER: 'GET_USER',
+  FOLLOW: 'FOLLOW',
 };
 
 export interface IUser {
@@ -36,6 +37,12 @@ interface IUpdateProps {
   userData: IUser;
   avatar: string | File;
   auth: INotify;
+}
+
+interface IFollowProps {
+  user: IUser;
+  auth: INotify;
+  users: IUser[];
 }
 
 export const getProfileUsers =
@@ -109,4 +116,11 @@ export const updateProfileUser =
       });
     }
     return null;
+  };
+
+export const follow =
+  ({ users, user, auth }: IFollowProps) =>
+  async (dispatch: CallableFunction) => {
+    const newUser = { ...user, followers: [...user.followers, auth.user] };
+    dispatch({ type: profileTypes.FOLLOW, payload: newUser });
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import Avatar from '../avatar';
@@ -50,16 +50,16 @@ const Info = () => {
                   Edit Profile
                 </button>
               ) : (
-                <FollowBtn />
+                <FollowBtn user={user} />
               )}
             </div>
             <div className='follow_btn'>
               <span className='m-0'>{user.followers.length} Followers </span>
               <span className='m-lg-4'>{user.following.length} Following </span>
             </div>
-            <h6>{user.fullName}</h6>
-            <p>{user.address}</p>
-            <p>
+            <h6 className='m-0'>{user.fullName}</h6>
+            <p className='m-0'>{user.address}</p>
+            <p className='m-0'>
               <a
                 href={`mailto:${user.email}?subject=Социальная сеть NSOCIAL&amp;body=Здравствуйте!`}
               >

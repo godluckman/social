@@ -36,6 +36,7 @@ const Header = () => {
             <h1 className='navbar-brand text-uppercase p-0 m-0'>NSocial</h1>
           </Link>
           <Search />
+          <div />
           <div className='menu'>
             <ul className='navbar-nav flex-row mb-2 mb-lg-0'>
               {navLinks.map((link) => (
