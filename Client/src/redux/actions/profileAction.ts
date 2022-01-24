@@ -87,14 +87,17 @@ export const updateProfileUser =
     try {
       dispatch({ type: allTypes.ALERT, payload: { loading: true } });
       const media = await imageUpload(avatar);
+      console.log(media, 'media');
+      console.log('media.img', media.img);
       const res = await patchDataApi(
         'user',
         {
           ...userData,
-          avatar: avatar ? media.msg.img : auth.user.avatar,
+          avatar: avatar ? media.img : auth.user.avatar,
         },
         auth.token
       );
+      console.log('a', res);
       dispatch({
         type: allTypes.AUTH,
         payload: {
@@ -102,7 +105,7 @@ export const updateProfileUser =
           user: {
             ...auth.user,
             ...userData,
-            avatar: avatar ? media.msg.img : auth.user.avatar,
+            avatar: avatar ? media.img : auth.user.avatar,
           },
         },
       });
@@ -130,6 +133,14 @@ export const follow =
         user: { ...auth.user, following: [...auth.user.following, newUser] },
       },
     });
+    try {
+      await patchDataApi(`user/${user._id}/follow`, auth.user, auth.token);
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
   };
 
 export const unfollow =
@@ -150,4 +161,12 @@ export const unfollow =
         },
       },
     });
+    try {
+      await patchDataApi(`user/${user._id}/unfollow`, null, auth.token);
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
   };
