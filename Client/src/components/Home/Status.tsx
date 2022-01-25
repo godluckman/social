@@ -16,7 +16,7 @@ const Status = () => {
         type='button'
         onClick={() => dispatch({ type: allTypes.STATUS, payload: true })}
       >
-        {auth.user.userName}, what are you thinking?
+        {auth.user.userName}, is there anything you would like to share?
       </button>
     </div>
   );
