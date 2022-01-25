@@ -3,6 +3,7 @@ export const allTypes = {
   ALERT: 'ALERT',
   NOTIFY: 'NOTIFY',
   THEME: 'THEME',
+  STATUS: 'STATUS',
 };
 
 export const editData = (data: any[], id: string, post: any) =>

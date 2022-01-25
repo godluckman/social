@@ -5,11 +5,12 @@ import PageRender from './pageRender';
 import NotFound from './components/notFound';
 import Login from './components/login';
 import Register from './components/register';
-import Home from './components/home';
+import Home from './components/Home/home';
 import { refreshToken } from './redux/actions/authAction';
 import Alert from './components/notify/notify';
 import Header from './components/header';
 import PrivateRouter from './privateRoter';
+import StatusModal from './components/statusModal';
 
 interface INotify extends Object {
   token: string;
@@ -17,10 +18,11 @@ interface INotify extends Object {
 
 interface IState extends DefaultRootState {
   auth: INotify;
+  status: boolean;
 }
 
 const App = () => {
-  const { auth } = useSelector((state: IState) => state);
+  const { auth, status } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,6 +36,7 @@ const App = () => {
       <div className='App'>
         <div className='main'>
           {auth.token && <Header />}
+          {status && <StatusModal />}
           <Routes>
             <Route path='/' element={auth.token ? <Home /> : <Login />} />
             <Route path='/login' element={<Login />} />

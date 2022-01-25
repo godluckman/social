@@ -19,7 +19,7 @@ const Header = () => {
   }
   interface IState extends DefaultRootState {
     auth: INotify;
-    theme: string;
+    theme: boolean;
   }
 
   const { auth, theme } = useSelector((state: IState) => state);

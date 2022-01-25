@@ -3,6 +3,8 @@
 @import url('styles/header.css');
 @import url('styles/avatar.css');
 @import url('styles/profile.css');
+@import url('styles/home.css');
+@import url('styles/status.css');
 
 * {
     padding: 0;
