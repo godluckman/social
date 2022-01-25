@@ -1,10 +1,6 @@
 import { Request, Response } from 'express';
 import UserModel from '../model/userModel';
 
-// export interface IFollowRequest extends Request {
-//   user: { _id: string };
-// }
-
 const userController = {
   searchUser: async (req: Request, res: Response) => {
     try {
@@ -14,8 +10,8 @@ const userController = {
         .limit(10)
         .select('fullName userName avatar');
       res.json({ users });
-    } catch (e: any) {
-      return res.status(500).json({ msg: e.message });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },
@@ -26,8 +22,8 @@ const userController = {
         .populate('followers following', '-password');
       if (!user) return res.status(400).json({ msg: 'User does not exist.' });
       res.json({ user });
-    } catch (e: any) {
-      return res.status(500).json({ msg: e.message });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },
@@ -51,8 +47,8 @@ const userController = {
       );
       console.log('updateUser userController');
       res.json({ msg: 'Update Success!' });
-    } catch (e: any) {
-      return res.status(500).json({ msg: e.message });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },
@@ -74,24 +70,29 @@ const userController = {
         { new: true }
       );
       res.json({ msg: 'Followed user.' });
-    } catch (e: any) {
-      return res.status(500).json({ msg: e.message });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },
   unfollow: async (req: any, res: Response) => {
     try {
-      await UserModel.findOneAndUpdate(
+      const newUser = await UserModel.findOneAndUpdate(
         { _id: req.params.id },
-        { $pull: { followers: req.body._id } },
+        {
+          $pull: { followers: req.body._id },
+        },
         { new: true }
-      );
+      ).populate('followers following', '-password');
       await UserModel.findOneAndUpdate(
         { _id: req.body._id },
-        { $pull: { following: req.params.id } },
+        {
+          $pull: { following: req.params.id },
+        },
         { new: true }
       );
-      res.json({ msg: 'UnFollow user.' });
+
+      res.json({ newUser });
     } catch (e) {
       return res.status(500).json({ msg: (e as Error).message });
     }

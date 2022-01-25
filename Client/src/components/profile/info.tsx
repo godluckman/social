@@ -5,6 +5,8 @@ import Avatar from '../avatar';
 import { getProfileUsers, IUser } from '../../redux/actions/profileAction';
 import EditProfile from './editProfile';
 import FollowBtn from '../followBtn';
+import Followers from './Followers';
+import Following from './Following';
 
 const Info = ({ auth, profile }: any) => {
   const { id } = useParams();
@@ -12,6 +14,8 @@ const Info = ({ auth, profile }: any) => {
   const dispatch = useDispatch();
   const [userData, setUserData] = useState<IUser[]>([]);
   const [onEdit, setOnEdit] = useState(false);
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
 
   useEffect(() => {
     if (id === auth.user._id) {
@@ -44,8 +48,20 @@ const Info = ({ auth, profile }: any) => {
               )}
             </div>
             <div className='follow_btn'>
-              <span className='m-0'>{user.followers.length} Followers </span>
-              <span className='m-lg-4'>{user.following.length} Following </span>
+              <span
+                className='m-0'
+                onClick={() => setShowFollowers(true)}
+                onKeyUp={() => setShowFollowers(true)}
+              >
+                {user.followers.length} Followers{' '}
+              </span>
+              <span
+                className='m-lg-4'
+                onClick={() => setShowFollowing(true)}
+                onKeyUp={() => setShowFollowing(true)}
+              >
+                {user.following.length} Following{' '}
+              </span>
             </div>
             <h6 className='m-0'>{user.fullName}</h6>
             <p className='m-0'>{user.address}</p>
@@ -59,6 +75,18 @@ const Info = ({ auth, profile }: any) => {
             <p>{user.story}</p>
           </div>
           {onEdit && <EditProfile setOnEdit={setOnEdit} />}
+          {showFollowers && (
+            <Followers
+              users={user.followers}
+              setShowFollowers={setShowFollowers}
+            />
+          )}
+          {showFollowing && (
+            <Following
+              users={user.following}
+              setShowFollowing={setShowFollowing}
+            />
+          )}
         </div>
       ))}
     </div>
