@@ -1,4 +1,4 @@
-import allTypes from '../actions/allTypes';
+import { allTypes } from '../actions/allTypes';
 
 const initialState = false;
 

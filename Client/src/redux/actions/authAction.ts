@@ -1,5 +1,5 @@
 import { postDataApi } from '../utils/fetchData';
-import AllTypes from './allTypes';
+import { allTypes as AllTypes } from './allTypes';
 import valid, { IErr } from '../utils/valid';
 
 export const login = (data: object) => async (dispatch: CallableFunction) => {

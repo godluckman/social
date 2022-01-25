@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/actions/authAction';
-import allTypes from '../redux/actions/allTypes';
+import { allTypes } from '../redux/actions/allTypes';
 import Avatar from './avatar';
 import Search from './search';
 
@@ -36,6 +36,7 @@ const Header = () => {
             <h1 className='navbar-brand text-uppercase p-0 m-0'>NSocial</h1>
           </Link>
           <Search />
+          <div />
           <div className='menu'>
             <ul className='navbar-nav flex-row mb-2 mb-lg-0'>
               {navLinks.map((link) => (

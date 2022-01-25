@@ -2,7 +2,7 @@ import React from 'react';
 import { DefaultRootState, useDispatch, useSelector } from 'react-redux';
 import Loading from './loading';
 import Toast from './toast';
-import allTypes from '../../redux/actions/allTypes';
+import { allTypes } from '../../redux/actions/allTypes';
 
 interface INotify extends Object {
   loading: string;

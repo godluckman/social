@@ -1,4 +1,3 @@
-import React from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 import Info from './info';
 import Posts from './posts';
@@ -13,25 +12,25 @@ interface INotify extends Object {
     address: string;
     email: string;
     story: string;
-    followers: [];
-    following: [];
+    followers: string[];
+    following: string[];
   };
 }
 interface IState extends DefaultRootState {
   auth: INotify;
-  profile: { loading: boolean };
+  profile: any;
 }
 
 const Profile = () => {
-  const { profile } = useSelector((state: IState) => state);
+  const { profile, auth } = useSelector((state: IState) => state);
   return (
     <div className='profile'>
       {profile.loading ? (
-        <div className='spinner-border loading' role='status'>
+        <div className='spinner-border loading mx-auto my-4' role='status'>
           <span className='visually-hidden'>Loading...</span>
         </div>
       ) : (
-        <Info />
+        <Info profile={profile} auth={auth} />
       )}
       <Posts />
     </div>

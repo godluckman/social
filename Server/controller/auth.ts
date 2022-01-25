@@ -55,7 +55,7 @@ const Auth = {
         user: { ...newUser._doc, password: '' },
       });
     } catch (e) {
-      return res.status(500).json({ msg: e });
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },
@@ -85,7 +85,7 @@ const Auth = {
         user: { ...user._doc, password: '' },
       });
     } catch (e) {
-      return res.status(500).json({ msg: e });
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },
@@ -94,7 +94,7 @@ const Auth = {
       res.clearCookie('refreshtoken', { path: '/api/refresh_token' });
       return res.json({ msg: 'Logged out' });
     } catch (e) {
-      return res.status(500).json({ msg: e });
+      return res.status(500).json({ msg: (e as Error).message });
     }
   },
   generateAccessToken: async (req: Request, res: Response) => {
@@ -118,7 +118,7 @@ const Auth = {
         }
       );
     } catch (e) {
-      return res.status(500).json({ msg: e });
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },

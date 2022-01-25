@@ -10,18 +10,91 @@ const userController = {
         .limit(10)
         .select('fullName userName avatar');
       res.json({ users });
-    } catch (e: any) {
-      return res.status(500).json({ msg: e.message });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },
   getUser: async (req: Request, res: Response) => {
     try {
-      const user = await UserModel.findById(req.params.id).select('-password');
+      const user = await UserModel.findById(req.params.id)
+        .select('-password')
+        .populate('followers following', '-password');
       if (!user) return res.status(400).json({ msg: 'User does not exist.' });
       res.json({ user });
-    } catch (e: any) {
-      return res.status(500).json({ msg: e.message });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
+    }
+    return null;
+  },
+  updateUser: async (req: Request, res: Response) => {
+    try {
+      const { avatar, fullName, mobile, address, story, gender } = req.body;
+      console.log(avatar);
+      if (!fullName)
+        return res.status(400).json({ msg: 'Please add your full name.' });
+
+      await UserModel.findOneAndUpdate(
+        { _id: req.body._id },
+        {
+          avatar,
+          fullName,
+          mobile,
+          address,
+          story,
+          gender,
+        }
+      );
+      console.log('updateUser userController');
+      res.json({ msg: 'Update Success!' });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
+    }
+    return null;
+  },
+  follow: async (req: any, res: Response) => {
+    try {
+      const user = await UserModel.find({
+        _id: req.params.id,
+        followers: req.body._id,
+      });
+      if (user.length > 0) return res.status(500).json({ msg: 'Followed' });
+      await UserModel.findOneAndUpdate(
+        { _id: req.params.id },
+        { $push: { followers: req.body._id } },
+        { new: true }
+      );
+      await UserModel.findOneAndUpdate(
+        { _id: req.body._id },
+        { $push: { following: req.params.id } },
+        { new: true }
+      );
+      res.json({ msg: 'Followed user.' });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
+    }
+    return null;
+  },
+  unfollow: async (req: any, res: Response) => {
+    try {
+      const newUser = await UserModel.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $pull: { followers: req.body._id },
+        },
+        { new: true }
+      ).populate('followers following', '-password');
+      await UserModel.findOneAndUpdate(
+        { _id: req.body._id },
+        {
+          $pull: { following: req.params.id },
+        },
+        { new: true }
+      );
+
+      res.json({ newUser });
+    } catch (e) {
+      return res.status(500).json({ msg: (e as Error).message });
     }
     return null;
   },
