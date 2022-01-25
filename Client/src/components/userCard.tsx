@@ -23,7 +23,7 @@ const UserCard = ({
 }: Prop) => (
   <div className='d-flex p-2 align-items-center'>
     <Avatar src={user.avatar} size='avatar' />
-    <div className='ml-1'>
+    <div className='m-lg-1'>
       <span className='d-block'>{user.userName}</span>
       <small>{user.fullName}</small>
     </div>

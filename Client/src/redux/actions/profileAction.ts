@@ -121,7 +121,17 @@ export const updateProfileUser =
 export const follow =
   ({ users, user, auth }: IFollowProps) =>
   async (dispatch: CallableFunction) => {
-    const newUser = { ...user, followers: [...user.followers, auth.user] };
+    let newUser;
+    if (users.every((item) => item._id !== user._id)) {
+      newUser = { ...user, followers: [...user.followers, auth.user] };
+    } else {
+      users.forEach((item) => {
+        if (item._id === user._id) {
+          newUser = { ...item, followers: [...item.followers, auth.user] };
+        }
+      });
+    }
+
     dispatch({ type: profileTypes.FOLLOW, payload: newUser });
     dispatch({
       type: allTypes.AUTH,
@@ -143,17 +153,32 @@ export const follow =
 export const unfollow =
   ({ users, user, auth }: IFollowProps) =>
   async (dispatch: CallableFunction) => {
-    const newUser = {
-      ...user,
-      followers: deleteData(user.followers, auth.user._id),
-    };
+    let newUser;
+
+    if (users.every((item) => item._id !== user._id)) {
+      newUser = {
+        ...user,
+        followers: deleteData(user.followers, auth.user._id),
+      };
+    } else {
+      users.forEach((item) => {
+        if (item._id === user._id) {
+          newUser = {
+            ...item,
+            followers: deleteData(item.followers, auth.user._id),
+          };
+        }
+      });
+    }
     dispatch({ type: profileTypes.UNFOLLOW, payload: newUser });
+
     dispatch({
       type: allTypes.AUTH,
       payload: {
         ...auth,
         user: {
           ...auth.user,
+          // @ts-ignore
           following: deleteData(auth.user.following, newUser._id),
         },
       },

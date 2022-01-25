@@ -31,12 +31,12 @@ const FollowBtn = ({ user }: Prop) => {
     setFollowed(false);
   };
   const handleFollow = async () => {
-    await dispatch(follow({ users: profile.users, user, auth }));
     setFollowed(true);
+    await dispatch(follow({ users: profile.users, user, auth }));
   };
 
   return (
-    <>
+    <div>
       {followed ? (
         <button
           type='button'
@@ -54,8 +54,7 @@ const FollowBtn = ({ user }: Prop) => {
           Follow
         </button>
       )}
-      <div />
-    </>
+    </div>
   );
 };
 
