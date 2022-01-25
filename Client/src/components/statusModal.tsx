@@ -41,12 +41,12 @@ const StatusModal = () => {
     const newImages: File[] = [];
     files.forEach((file) => {
       if (!file) {
-        err = 'File does not exist.';
+        err = 'File does not exist';
         return err;
       }
 
       if (file.size > 1024 * 1024 * 5) {
-        err = 'The largest image is 5mb.';
+        err = 'The largest image is 5mb';
         return err;
       }
 
