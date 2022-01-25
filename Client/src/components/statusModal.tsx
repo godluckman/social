@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { allTypes } from '../redux/actions/allTypes';
 import { IState } from './profile/Following';
+import { createPost, updatePost } from '../redux/actions/postAction';
 
 interface IStatusState extends IState {
   theme: boolean;
-  status: boolean;
+  status: any;
 }
 
 const StatusModal = () => {
@@ -17,6 +18,21 @@ const StatusModal = () => {
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
+    if (images.length === 0)
+      return dispatch({
+        type: allTypes.ALERT,
+        payload: { error: 'Please add your photo.' },
+      });
+
+    if (status.onEdit) {
+      dispatch(updatePost({ content, images, auth, status }));
+    } else {
+      dispatch(createPost({ content, images, auth }));
+    }
+
+    setContent('');
+    setImages([]);
+    return null;
   };
 
   const handleChangeImages = (e: any) => {
@@ -30,7 +46,7 @@ const StatusModal = () => {
       }
 
       if (file.size > 1024 * 1024 * 5) {
-        err = 'The image/video largest is 5mb.';
+        err = 'The largest image is 5mb.';
         return err;
       }
 
