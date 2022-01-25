@@ -46,7 +46,7 @@ const StatusModal = () => {
       }
 
       if (file.size > 1024 * 1024 * 5) {
-        err = 'The largest image is 5mb.';
+        err = 'The  largest image is 5mb.';
         return err;
       }
 
@@ -89,7 +89,7 @@ const StatusModal = () => {
           <textarea
             name='content'
             value={content}
-            placeholder={`${auth.user.userName}, what are you thinking?`}
+            placeholder={`${auth.user.userName}, what fo you you think?`}
             onChange={(e) => setContent(e.target.value)}
             style={{
               filter: theme ? 'invert(1)' : 'invert(0)',
