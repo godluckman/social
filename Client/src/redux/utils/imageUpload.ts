@@ -17,7 +17,7 @@ export const checkImage = (file: File) => {
   return err;
 };
 
-export const imageUpload = async (image: any) => {
+export const imageUpload = async (image: string | File) => {
   const formData = new FormData();
   formData.append('image', image);
   const res = await axios.post('/api/upload', formData, {

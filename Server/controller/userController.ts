@@ -30,7 +30,6 @@ const userController = {
   updateUser: async (req: Request, res: Response) => {
     try {
       const { avatar, fullName, mobile, address, story, gender } = req.body;
-      console.log(avatar);
       if (!fullName)
         return res.status(400).json({ msg: 'Please add your full name.' });
 
@@ -45,7 +44,6 @@ const userController = {
           gender,
         }
       );
-      console.log('updateUser userController');
       res.json({ msg: 'Update Success!' });
     } catch (e) {
       return res.status(500).json({ msg: (e as Error).message });

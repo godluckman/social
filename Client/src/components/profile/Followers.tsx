@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import UserCard from '../userCard';
 import FollowBtn from '../followBtn';
 import { IState } from './Following';
+import { IUser } from '../../redux/actions/profileAction';
 
 export interface IFollowProps {
   users: any;
@@ -18,7 +19,7 @@ const Followers = ({ users, setShowFollowers }: IFollowProps) => {
         <hr />
 
         <div className='follow_content'>
-          {users.map((user: any) => (
+          {users.map((user: IUser) => (
             <UserCard
               key={user._id}
               user={user}

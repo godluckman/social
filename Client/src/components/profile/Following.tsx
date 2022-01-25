@@ -14,7 +14,7 @@ export interface IState extends DefaultRootState {
 
 export interface IFollowProps {
   users: any;
-  setShowFollowing: any;
+  setShowFollowing: CallableFunction;
 }
 
 const Following = ({ users, setShowFollowing }: IFollowProps) => {
