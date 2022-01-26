@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { allTypes } from '../redux/actions/allTypes';
 import { IState } from './profile/Following';
@@ -62,6 +62,13 @@ const StatusModal = () => {
     newArr.splice(index, 1);
     setImages(newArr);
   };
+
+  useEffect(() => {
+    if (status.onEdit) {
+      setContent(status.content);
+      setImages(status.images);
+    }
+  }, [status]);
 
   return (
     <div className='status_modal'>

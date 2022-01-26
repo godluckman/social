@@ -13,7 +13,6 @@ const Home = () => {
     <div className='home row mx-0'>
       <div className='col-md-8'>
         <Status />
-        {/* eslint-disable-next-line no-nested-ternary */}
         {homePosts.loading ? (
           <div className='text-center'>
             <div
@@ -25,7 +24,7 @@ const Home = () => {
             </div>
           </div>
         ) : homePosts.result === 0 && homePosts.posts.length === 0 ? (
-          <h2 className='text-center'>No Post</h2>
+          <h2 className='text-center'>No Posts</h2>
         ) : (
           <HPosts />
         )}

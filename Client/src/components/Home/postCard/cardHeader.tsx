@@ -4,10 +4,14 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Avatar from '../../avatar';
 import { IState } from '../../profile/Following';
+import { allTypes } from '../../../redux/actions/allTypes';
 
 const CardHeader = ({ post }: any) => {
   const { auth } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
+  const handleEditPost = () => {
+    dispatch({ type: allTypes.STATUS, payload: { ...post, onEdit: true } });
+  };
   console.log(post);
   return (
     <div className='card_header'>
@@ -40,7 +44,14 @@ const CardHeader = ({ post }: any) => {
           {auth.user._id === post.user._id && (
             <>
               <div className='dropdown-item'>
-                <span className='material-icons'>create</span> Edit
+                <span
+                  className='material-icons'
+                  onClick={handleEditPost}
+                  onKeyUp={handleEditPost}
+                >
+                  create
+                </span>{' '}
+                Edit Post
               </div>
               <div className='dropdown-item'>
                 <span className='material-icons'>delete_outline</span> Remove
