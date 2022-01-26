@@ -1,7 +1,7 @@
 import { IUser } from './profileAction';
 import { allTypes } from './allTypes';
 import { imageUpload } from '../utils/imageUpload';
-import { postDataApi } from '../utils/fetchData';
+import { getDataApi, postDataApi } from '../utils/fetchData';
 
 export const postTypes = {
   CREATE_POST: 'CREATE_POST',
@@ -40,6 +40,26 @@ export const createPost =
       });
 
       dispatch({ type: allTypes.ALERT, payload: { loading: false } });
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
+  };
+
+export const getPosts =
+  (token: string) => async (dispatch: CallableFunction) => {
+    try {
+      dispatch({ type: postTypes.LOADING_POST, payload: true });
+      const res = await getDataApi('posts', token);
+
+      dispatch({
+        type: postTypes.GET_POSTS,
+        payload: { ...res.data, page: 2 },
+      });
+
+      dispatch({ type: postTypes.LOADING_POST, payload: false });
     } catch (err: any) {
       dispatch({
         type: allTypes.ALERT,

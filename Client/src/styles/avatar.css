@@ -4,6 +4,13 @@
     border-radius: 1rem;
 }
 
+.avatar-medium{
+    width: 5rem;
+    height: 5rem;
+    border-radius: 3rem;
+
+}
+
 .avatar-large{
     width: 10rem;
     height: 10rem;

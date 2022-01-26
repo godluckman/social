@@ -11,6 +11,7 @@ import Alert from './components/notify/notify';
 import Header from './components/header';
 import PrivateRouter from './privateRoter';
 import StatusModal from './components/statusModal';
+import { getPosts } from './redux/actions/postAction';
 
 interface INotify extends Object {
   token: string;
@@ -28,6 +29,10 @@ const App = () => {
   useEffect(() => {
     dispatch(refreshToken());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (auth.token) dispatch(getPosts(auth.token));
+  }, [dispatch, auth.token]);
 
   return (
     <Router>

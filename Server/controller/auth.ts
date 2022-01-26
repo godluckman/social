@@ -6,9 +6,9 @@ import UserModel from '../model/userModel';
 const accessSecret = '123secretaccess';
 const refreshSecret = 'secretrefresh123';
 
-const createAccessToken: CallableFunction = (payload: object) =>
+const createAccessToken: CallableFunction = (payload: any) =>
   jwt.sign(payload, accessSecret, { expiresIn: '1d' });
-const createRefreshToken: CallableFunction = (payload: object) =>
+const createRefreshToken: CallableFunction = (payload: any) =>
   jwt.sign(payload, refreshSecret, { expiresIn: '30d' });
 
 const Auth = {
@@ -112,7 +112,7 @@ const Auth = {
             .select('-password')
             .populate('followers following', '-password');
           if (!user) return res.status(400).json({ msg: 'Does not exist' });
-          const accessToken = createAccessToken({ id: result?._id });
+          const accessToken = createAccessToken({ id: result?.id });
           res.json({ accessToken, user });
           return null;
         }
