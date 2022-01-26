@@ -1,18 +1,17 @@
-import { Request, Response } from 'express';
 import PostModel from '../model/postModel';
 
 const postController = {
   createPost: async (req: any, res: any) => {
     try {
-      const { content, images } = req.body;
+      const { content, auth, image } = req.body;
 
-      if (images.length === 0)
+      if (!image)
         return res.status(400).json({ msg: 'Please add your photo.' });
 
       const newPost = new PostModel({
         content,
-        images,
-        user: req.user._id,
+        image,
+        user: auth.user._id,
       });
       await newPost.save();
 

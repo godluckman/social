@@ -5,10 +5,7 @@ const { Schema, model, Types } = pkg;
 const postSchema = new Schema(
   {
     content: String,
-    images: {
-      type: Array,
-      required: true,
-    },
+    image: String,
     likes: [{ type: Types.ObjectId, ref: 'user' }],
     comments: [{ type: Types.ObjectId, ref: 'comment' }],
     user: { type: Types.ObjectId, ref: 'user' },

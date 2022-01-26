@@ -87,11 +87,13 @@ export const updateProfileUser =
     try {
       dispatch({ type: allTypes.ALERT, payload: { loading: true } });
       const media = await imageUpload(avatar);
+      const imgName = media.img.split('\\');
+      const imgGet = `http://localhost:3100/images/${imgName[4]}`;
       const res = await patchDataApi(
         'user',
         {
           ...userData,
-          avatar: avatar ? media.img : auth.user.avatar,
+          avatar: avatar ? imgGet : auth.user.avatar,
         },
         auth.token
       );
@@ -102,7 +104,7 @@ export const updateProfileUser =
           user: {
             ...auth.user,
             ...userData,
-            avatar: avatar ? media.img : auth.user.avatar,
+            avatar: avatar ? imgGet : auth.user.avatar,
           },
         },
       });
