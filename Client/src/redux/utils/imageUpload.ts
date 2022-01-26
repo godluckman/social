@@ -27,3 +27,22 @@ export const imageUpload = async (image: string | File) => {
   });
   return res.data;
 };
+
+// export const imagesUpload = async (images: File[]) => {
+//   const imgArr = [];
+//   // eslint-disable-next-line no-restricted-syntax
+//   for (const item of images) {
+//     const formData = new FormData();
+//     formData.append('image', item);
+//     // eslint-disable-next-line no-await-in-loop
+//     const res = await axios.post('/api/upload', formData, {
+//       headers: {
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+//     // eslint-disable-next-line no-await-in-loop
+//     // const data = await res.json();
+//     imgArr.push({ public_id: data.public_id, url: data.secure_url });
+//   }
+//   return imgArr;
+// };
