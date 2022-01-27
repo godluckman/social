@@ -4,6 +4,7 @@ export const allTypes = {
   NOTIFY: 'NOTIFY',
   THEME: 'THEME',
   STATUS: 'STATUS',
+  MODAL: 'MODAL',
 };
 
 export const editData = (data: any[], id: string, post: any) =>
