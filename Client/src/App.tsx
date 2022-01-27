@@ -20,10 +20,11 @@ interface INotify extends Object {
 interface IState extends DefaultRootState {
   auth: INotify;
   status: boolean;
+  modal: boolean;
 }
 
 const App = () => {
-  const { auth, status } = useSelector((state: IState) => state);
+  const { auth, status, modal } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const App = () => {
     <Router>
       <Alert />
       <input type='checkbox' id='theme' />
-      <div className='App'>
+      <div className={`App ${(status || modal) && 'mode'}`}>
         <div className='main'>
           {auth.token && <Header />}
           {status && <StatusModal />}

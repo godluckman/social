@@ -105,3 +105,59 @@ export const updatePost =
       });
     }
   };
+
+export const likePost =
+  ({ post, auth }: any) =>
+  async (dispatch: CallableFunction) => {
+    const newPost = { ...post, likes: [...post.likes, auth.user] };
+    dispatch({ type: postTypes.UPDATE_POST, payload: newPost });
+
+    try {
+      await patchDataApi(`post/${post._id}/like`, null, auth.token);
+      // Notify
+      // const msg = {
+      //   id: auth.user._id,
+      //   text: 'like your post.',
+      //   recipients: [post.user._id],
+      //   url: `/post/${post._id}`,
+      //   content: post.content,
+      //   image: post.images[0].url,
+      // };
+      // dispatch(createNotify({ msg, auth }));
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
+  };
+
+export const unLikePost =
+  ({ post, auth }: any) =>
+  async (dispatch: CallableFunction) => {
+    const newPost = {
+      ...post,
+      likes: post.likes.filter((like: any) => like._id !== auth.user._id),
+    };
+    dispatch({ type: postTypes.UPDATE_POST, payload: newPost });
+
+    // socket.emit('unLikePost', newPost);
+
+    try {
+      await patchDataApi(`post/${post._id}/unlike`, null, auth.token);
+
+      // Notify
+      // const msg = {
+      //   id: auth.user._id,
+      //   text: 'like your post.',
+      //   recipients: [post.user._id],
+      //   url: `/post/${post._id}`,
+      // }
+      // dispatch(removeNotify({msg, auth, socket}))
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
+  };

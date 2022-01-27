@@ -91,6 +91,49 @@ const postController = {
     }
     return null;
   },
+  likePost: async (req: any, res: Response) => {
+    try {
+      const post = await PostModel.find({
+        _id: req.params.id,
+        likes: req.user._id,
+      });
+      if (post.length > 0)
+        return res.status(400).json({ msg: 'You liked this post.' });
+
+      const like = await PostModel.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $push: { likes: req.user._id },
+        },
+        { new: true }
+      );
+      if (!like)
+        return res.status(400).json({ msg: 'This post does not exist.' });
+      res.json({ msg: 'Liked Post!' });
+    } catch (err) {
+      return res.status(500).json({ msg: (err as Error).message });
+    }
+    return null;
+  },
+  unLikePost: async (req: any, res: Response) => {
+    try {
+      const like = await PostModel.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $pull: { likes: req.user._id },
+        },
+        { new: true }
+      );
+
+      if (!like)
+        return res.status(400).json({ msg: 'This post does not exist.' });
+
+      res.json({ msg: 'UnLiked Post!' });
+    } catch (err) {
+      return res.status(500).json({ msg: (err as Error).message });
+    }
+    return null;
+  },
 };
 
 export default postController;
