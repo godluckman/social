@@ -1,9 +1,7 @@
 import React from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 import { IUser } from '../../redux/actions/profileAction';
-import CardHeader from './postCard/cardHeader';
-import CardBody from './postCard/cardBody';
-import CardFooter from './postCard/cardFooter';
+import PostCard from '../postCard';
 
 interface IState extends DefaultRootState {
   homePosts: { loading: boolean; result: number; page: number; posts: any[] };
@@ -16,11 +14,7 @@ const HPosts = () => {
   return (
     <div className='posts'>
       {homePosts.posts.map((post) => (
-        <div className='card my-3' key={post._id}>
-          <CardHeader post={post} />
-          <CardBody post={post} theme={theme} />
-          <CardFooter post={post} />
-        </div>
+        <PostCard key={post._id} post={post} theme={theme} />
       ))}
     </div>
   );
