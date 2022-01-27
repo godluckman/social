@@ -32,7 +32,9 @@ const postController = {
     try {
       const posts = await PostModel.find({
         user: [...req.user.following, req.user._id],
-      }).populate('user likes', 'avatar username fullName followers');
+      })
+        .sort('-createdAt')
+        .populate('user likes', 'avatar username fullName followers');
 
       // const features = new APIfeatures(Posts.find({
       //   user: [...req.user.following, req.user._id]
@@ -51,6 +53,38 @@ const postController = {
         msg: 'Success!',
         result: posts.length,
         posts,
+      });
+    } catch (err) {
+      return res.status(500).json({ msg: (err as Error).message });
+    }
+    return null;
+  },
+  updatePost: async (req: any, res: Response) => {
+    try {
+      const { content, image } = req.body;
+      const post = await PostModel.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          content,
+          image,
+        }
+      )
+        .populate('user likes', 'avatar username fullName')
+        .populate({
+          path: 'comments',
+          populate: {
+            path: 'user likes',
+            select: '-password',
+          },
+        });
+
+      res.json({
+        msg: 'Updated Post!',
+        newPost: {
+          ...post._doc,
+          content,
+          image,
+        },
       });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });

@@ -14,11 +14,11 @@ const StatusModal = () => {
   const dispatch = useDispatch();
 
   const [content, setContent] = useState('');
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<any[]>([]);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (images.length === 0)
+    if (!images)
       return dispatch({
         type: allTypes.ALERT,
         payload: { error: 'Please add your photo.' },
@@ -66,7 +66,7 @@ const StatusModal = () => {
   useEffect(() => {
     if (status.onEdit) {
       setContent(status.content);
-      setImages(status.images);
+      setImages([status.image]);
     }
   }, [status]);
 
@@ -106,9 +106,16 @@ const StatusModal = () => {
           />
           <div className='show_images'>
             {images.map((img, index) => (
-              <div key={img.name} id='file_img'>
+              // eslint-disable-next-line react/no-array-index-key
+              <div key={index} id='file_img'>
                 <img
-                  src={URL.createObjectURL(img)}
+                  src={
+                    img.url
+                      ? img.url
+                      : status.image
+                      ? status.image
+                      : URL.createObjectURL(img)
+                  }
                   alt='images'
                   className='img-thumbnail'
                   style={{ filter: theme ? 'invert(1)' : 'invert(0)' }}

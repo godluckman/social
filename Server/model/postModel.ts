@@ -11,7 +11,6 @@ const postSchema = new Schema(
     user: { type: Types.ObjectId, ref: 'user' },
   },
   {
-    collection: 'post',
     timestamps: true,
   }
 );

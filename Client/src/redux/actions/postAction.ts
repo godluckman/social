@@ -1,7 +1,7 @@
 import { IUser } from './profileAction';
 import { allTypes } from './allTypes';
 import { imageUpload } from '../utils/imageUpload';
-import { getDataApi, postDataApi } from '../utils/fetchData';
+import { getDataApi, patchDataApi, postDataApi } from '../utils/fetchData';
 
 export const postTypes = {
   CREATE_POST: 'CREATE_POST',
@@ -16,6 +16,10 @@ interface ICreatePost {
   content: string;
   images: File[];
   auth: { token: string; user: IUser };
+}
+
+interface IUpdatePost extends ICreatePost {
+  status: any;
 }
 
 export const createPost =
@@ -69,7 +73,35 @@ export const getPosts =
   };
 
 export const updatePost =
-  ({ content, images, auth, status }: any) =>
+  ({ content, images, auth, status }: IUpdatePost) =>
   async (dispatch: CallableFunction) => {
-    console.log({ content, images, auth, status });
+    let media = [];
+    const image: string | File = images[0];
+    let imgGet: string | File = image;
+    try {
+      dispatch({ type: allTypes.ALERT, payload: { loading: true } });
+      if (image.name) {
+        media = await imageUpload(image);
+        const imgName = media.img.split('\\');
+        imgGet = `http://localhost:3100/images/${imgName[4]}`;
+      }
+      const res = await patchDataApi(
+        `post/${status._id}`,
+        {
+          content,
+          image: imgGet,
+        },
+        auth.token
+      );
+      dispatch({
+        type: postTypes.UPDATE_POST,
+        payload: { ...res.data.newPost, user: auth.user },
+      });
+      dispatch({ type: allTypes.ALERT, payload: { success: res.data.msg } });
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
   };

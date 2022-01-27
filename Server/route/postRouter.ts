@@ -6,5 +6,6 @@ const router = Router();
 
 router.post('/posts', auth, postController.createPost);
 router.get('/posts', auth, postController.getPosts);
+router.patch('/post/:id', auth, postController.updatePost);
 
 export default router;

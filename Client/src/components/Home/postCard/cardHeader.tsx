@@ -12,16 +12,16 @@ const CardHeader = ({ post }: any) => {
   const handleEditPost = () => {
     dispatch({ type: allTypes.STATUS, payload: { ...post, onEdit: true } });
   };
-  console.log(post);
+
   return (
     <div className='card_header'>
       <div className='d-flex'>
         <Avatar src={post.user.avatar} size='avatar-medium' />
 
-        <div className='card_name'>
+        <div className='card_name mx-3'>
           <h6 className='m-0'>
             <Link to={`/profile/${post.user._id}`} className='text-dark'>
-              {post.user.username}
+              {post.user.fullName}
             </Link>
           </h6>
           <small className='text-muted'>
@@ -43,15 +43,12 @@ const CardHeader = ({ post }: any) => {
         <div className='dropdown-menu'>
           {auth.user._id === post.user._id && (
             <>
-              <div className='dropdown-item'>
-                <span
-                  className='material-icons'
-                  onClick={handleEditPost}
-                  onKeyUp={handleEditPost}
-                >
-                  create
-                </span>{' '}
-                Edit Post
+              <div
+                className='dropdown-item'
+                onClick={handleEditPost}
+                onKeyUp={handleEditPost}
+              >
+                <span className='material-icons'>create</span> Edit Post
               </div>
               <div className='dropdown-item'>
                 <span className='material-icons'>delete_outline</span> Remove
