@@ -3,15 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IStateAT } from '../Home/postCard/cardFooter';
 import { createComment } from '../../redux/actions/commentAction';
 
-const InputComment = ({ children, post }: any) => {
+const InputComment = ({ children, post, onReply, setOnReply }: any) => {
   const [content, setContent] = useState('');
   const { auth, theme } = useSelector((state: IStateAT) => state);
   const dispatch = useDispatch();
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!content.trim()) {
-      // if (setOnReply) return setOnReply(false);
-      return;
+      if (setOnReply) return setOnReply(false);
+      return null;
     }
 
     setContent('');
@@ -21,13 +21,14 @@ const InputComment = ({ children, post }: any) => {
       likes: [],
       user: auth.user,
       createdAt: new Date().toISOString(),
-      // reply: onReply && onReply.commentId,
-      // tag: onReply && onReply.user
+      reply: onReply && onReply.commentId,
+      tag: onReply && onReply.user,
     };
 
     dispatch(createComment({ post, newComment, auth }));
 
-    // if (setOnReply) return setOnReply(false);
+    if (setOnReply) return setOnReply(false);
+    return null;
   };
 
   return (

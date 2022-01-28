@@ -11,6 +11,7 @@ import {
   unLikeComment,
   updateComment,
 } from '../../redux/actions/commentAction';
+import InputComment from './inputComment';
 
 const CommentCard = ({ children, comment, post, commentId }: any) => {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ const CommentCard = ({ children, comment, post, commentId }: any) => {
   const [onEdit, setOnEdit] = useState(false);
   const [isLike, setIsLike] = useState(false);
   const [loadLike, setLoadLike] = useState(false);
-  const [onReply, setOnReply] = useState(false);
+  const [onReply, setOnReply] = useState<any>(false);
 
   useEffect(() => {
     setContent(comment.content);
@@ -94,8 +95,8 @@ const CommentCard = ({ children, comment, post, commentId }: any) => {
           ) : (
             <div>
               {comment.tag && comment.tag._id !== comment.user._id && (
-                <Link to={`/profile/${comment.tag._id}`} className='mr-1'>
-                  @{comment.tag.username}
+                <Link to={`/profile/${comment.tag._id}`} className='me-1'>
+                  @{comment.tag.userName}
                 </Link>
               )}
               <span>
@@ -165,6 +166,14 @@ const CommentCard = ({ children, comment, post, commentId }: any) => {
           />
         </div>
       </div>
+      {onReply && (
+        <InputComment post={post} onReply={onReply} setOnReply={setOnReply}>
+          <Link to={`/profile/${onReply.user._id}`} className='me-1'>
+            @{onReply.user.userName}:
+          </Link>
+        </InputComment>
+      )}
+      {children}
     </div>
   );
 };

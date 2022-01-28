@@ -1,13 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IState } from '../profile/Following';
+import { deleteComment } from '../../redux/actions/commentAction';
 
 const CommentMenu = ({ post, comment, setOnEdit }: any) => {
   const dispatch = useDispatch();
   const { auth } = useSelector((state: IState) => state);
   const handleRemove = () => {
     if (post.user._id === auth.user._id || comment.user._id === auth.user._id) {
-      // dispatch(deleteComment({post, auth, comment}))
+      dispatch(deleteComment({ post, auth, comment }));
     }
   };
   // eslint-disable-next-line react/no-unstable-nested-components

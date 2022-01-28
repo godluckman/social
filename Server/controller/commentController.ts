@@ -93,6 +93,26 @@ const commentController = {
     }
     return null;
   },
+  deleteComment: async (req: any, res: Response) => {
+    try {
+      const comment = await CommentModel.findOneAndDelete({
+        _id: req.params.id,
+        $or: [{ user: req.user._id }, { postUserId: req.user._id }],
+      });
+
+      await PostModel.findOneAndUpdate(
+        { _id: comment.postId },
+        {
+          $pull: { comments: req.params.id },
+        }
+      );
+
+      res.json({ msg: 'Deleted!' });
+    } catch (err) {
+      return res.status(500).json({ msg: (err as Error).message });
+    }
+    return null;
+  },
 };
 
 export default commentController;

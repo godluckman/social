@@ -1,9 +1,10 @@
 import { allTypes, deleteData, editData } from './allTypes';
 import { postTypes } from './postAction';
-import { patchDataApi, postDataApi } from '../utils/fetchData';
+import { deleteDataApi, patchDataApi, postDataApi } from '../utils/fetchData';
 import { IUser } from './profileAction';
 
 export interface IComment {
+  tag: IUser;
   reply: any;
   content: string;
   createdAt: string;
@@ -122,6 +123,35 @@ export const unLikeComment =
 
     try {
       await patchDataApi(`comment/${comment._id}/unlike`, null, auth.token);
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
+  };
+
+export const deleteComment =
+  ({ post, comment, auth }: ILikeComment) =>
+  async (dispatch: CallableFunction) => {
+    const deleteArr = [
+      ...post.comments.filter((cm) => cm.reply === comment._id),
+      comment,
+    ];
+
+    const newPost = {
+      ...post,
+      comments: post.comments.filter(
+        (cm) => !deleteArr.find((da) => cm._id === da._id)
+      ),
+    };
+
+    dispatch({ type: postTypes.UPDATE_POST, payload: newPost });
+
+    try {
+      deleteArr.forEach((item) => {
+        deleteDataApi(`comment/${item._id}`, auth.token);
+      });
     } catch (err: any) {
       dispatch({
         type: allTypes.ALERT,
