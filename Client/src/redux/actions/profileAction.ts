@@ -3,10 +3,13 @@ import { allTypes, deleteData } from './allTypes';
 import { imageUpload } from '../utils/imageUpload';
 
 export const profileTypes = {
-  LOADING: 'LOADING',
-  GET_USER: 'GET_USER',
+  LOADING: 'LOADING_PROFILE',
+  GET_USER: 'GET_PROFILE_USER',
   FOLLOW: 'FOLLOW',
   UNFOLLOW: 'UNFOLLOW',
+  GET_ID: 'GET_PROFILE_ID',
+  GET_POSTS: 'GET_PROFILE_POSTS',
+  UPDATE_POST: 'UPDATE_PROFILE_POST',
 };
 
 export interface IUser {
@@ -31,7 +34,6 @@ interface INotify {
 interface IGetProps {
   id: string | undefined;
   auth: INotify;
-  users: IUser[];
 }
 
 interface IUpdateProps {
@@ -47,20 +49,31 @@ interface IFollowProps {
 }
 
 export const getProfileUsers =
-  ({ users, id, auth }: IGetProps) =>
+  ({ id, auth }: IGetProps) =>
   async (dispatch: CallableFunction) => {
-    if (users.every((user: IUser) => user._id !== id)) {
-      try {
-        dispatch({ type: profileTypes.LOADING, payload: true });
-        const res = await getDataApi(`/user/${id}`, auth.token);
-        dispatch({ type: profileTypes.GET_USER, payload: res.data });
-        dispatch({ type: profileTypes.LOADING, payload: false });
-      } catch (err: any) {
-        dispatch({
-          type: allTypes.ALERT,
-          payload: { error: err.response.data.msg },
-        });
-      }
+    dispatch({ type: profileTypes.GET_ID, payload: id });
+    try {
+      dispatch({ type: profileTypes.LOADING, payload: true });
+      const res = getDataApi(`/user/${id}`, auth.token);
+      const res1 = getDataApi(`/user_posts/${id}`, auth.token);
+      const users = await res;
+      const posts = await res1;
+      dispatch({
+        type: profileTypes.GET_USER,
+        payload: users.data,
+      });
+
+      dispatch({
+        type: profileTypes.GET_POSTS,
+        payload: { ...posts.data, _id: id, page: 2 },
+      });
+
+      dispatch({ type: profileTypes.LOADING, payload: false });
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
     }
   };
 

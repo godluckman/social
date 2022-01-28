@@ -114,16 +114,6 @@ export const likePost =
 
     try {
       await patchDataApi(`post/${post._id}/like`, null, auth.token);
-      // Notify
-      // const msg = {
-      //   id: auth.user._id,
-      //   text: 'like your post.',
-      //   recipients: [post.user._id],
-      //   url: `/post/${post._id}`,
-      //   content: post.content,
-      //   image: post.images[0].url,
-      // };
-      // dispatch(createNotify({ msg, auth }));
     } catch (err: any) {
       dispatch({
         type: allTypes.ALERT,
@@ -140,24 +130,28 @@ export const unLikePost =
       likes: post.likes.filter((like: any) => like._id !== auth.user._id),
     };
     dispatch({ type: postTypes.UPDATE_POST, payload: newPost });
-
-    // socket.emit('unLikePost', newPost);
-
     try {
       await patchDataApi(`post/${post._id}/unlike`, null, auth.token);
-
-      // Notify
-      // const msg = {
-      //   id: auth.user._id,
-      //   text: 'like your post.',
-      //   recipients: [post.user._id],
-      //   url: `/post/${post._id}`,
-      // }
-      // dispatch(removeNotify({msg, auth, socket}))
     } catch (err: any) {
       dispatch({
         type: allTypes.ALERT,
         payload: { error: err.response.data.msg },
       });
+    }
+  };
+
+export const getPost =
+  ({ detailPost, id, auth }: any) =>
+  async (dispatch: CallableFunction) => {
+    if (detailPost.every((post: any) => post._id !== id)) {
+      try {
+        const res = await getDataApi(`post/${id}`, auth.token);
+        dispatch({ type: postTypes.GET_POST, payload: res.data.post });
+      } catch (err: any) {
+        dispatch({
+          type: allTypes.ALERT,
+          payload: { error: err.response.data.msg },
+        });
+      }
     }
   };
