@@ -34,7 +34,14 @@ const postController = {
         user: [...req.user.following, req.user._id],
       })
         .sort('-createdAt')
-        .populate('user likes', 'avatar username fullName followers');
+        .populate('user likes', 'avatar username fullName followers')
+        .populate({
+          path: 'comments',
+          populate: {
+            path: 'user likes',
+            select: '-password',
+          },
+        });
 
       // const features = new APIfeatures(Posts.find({
       //   user: [...req.user.following, req.user._id]
@@ -42,13 +49,7 @@ const postController = {
       // const posts = await features.query
       //   .sort('-createdAt')
       //   .populate('user likes', 'avatar username fullName followers')
-      //   .populate({
-      //     path: 'comments',
-      //     populate: {
-      //       path: 'user likes',
-      //       select: '-password',
-      //     },
-      //   });
+
       res.json({
         msg: 'Success!',
         result: posts.length,

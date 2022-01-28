@@ -5,6 +5,7 @@
 @import url('styles/profile.css');
 @import url('styles/home.css');
 @import url('styles/status.css');
+@import url('styles/comments.css');
 
 * {
     padding: 0;
