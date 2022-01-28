@@ -1,14 +1,38 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IStateAT } from '../Home/postCard/cardFooter';
+import { createComment } from '../../redux/actions/commentAction';
 
-const InputComment = ({ post }: any) => {
+const InputComment = ({ children, post }: any) => {
   const [content, setContent] = useState('');
   const { auth, theme } = useSelector((state: IStateAT) => state);
   const dispatch = useDispatch();
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (!content.trim()) {
+      // if (setOnReply) return setOnReply(false);
+      return;
+    }
+
+    setContent('');
+
+    const newComment = {
+      content,
+      likes: [],
+      user: auth.user,
+      createdAt: new Date().toISOString(),
+      // reply: onReply && onReply.commentId,
+      // tag: onReply && onReply.user
+    };
+
+    dispatch(createComment({ post, newComment, auth }));
+
+    // if (setOnReply) return setOnReply(false);
+  };
 
   return (
-    <form className='card-footer comment_input'>
+    <form className='card-footer comment_input' onSubmit={handleSubmit}>
+      {children}
       <input
         type='text'
         placeholder='Add your comments...'

@@ -36,6 +36,63 @@ const commentController = {
     }
     return null;
   },
+  updateComment: async (req: any, res: Response) => {
+    try {
+      const { content } = req.body;
+
+      await CommentModel.findOneAndUpdate(
+        {
+          _id: req.params.id,
+          user: req.user._id,
+        },
+        { content }
+      );
+
+      res.json({ msg: 'Update Success!' });
+    } catch (err) {
+      return res.status(500).json({ msg: (err as Error).message });
+    }
+    return null;
+  },
+  likeComment: async (req: any, res: Response) => {
+    try {
+      const comment = await CommentModel.find({
+        _id: req.params.id,
+        likes: req.user._id,
+      });
+      if (comment.length > 0)
+        return res.status(400).json({ msg: 'You liked this post.' });
+
+      await CommentModel.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $push: { likes: req.user._id },
+        },
+        { new: true }
+      );
+
+      res.json({ msg: 'Liked Comment!' });
+    } catch (err) {
+      return res.status(500).json({ msg: (err as Error).message });
+    }
+    return null;
+  },
+  unLikeComment: async (req: any, res: Response) => {
+    try {
+      await CommentModel.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $pull: { likes: req.user._id },
+        },
+        { new: true }
+      );
+
+      res.json({ msg: 'UnLiked Comment!' });
+    } catch (err) {
+      return res.status(500).json({ msg: (err as Error).message });
+    }
+    return null;
+  },
 };
 
 export default commentController;
