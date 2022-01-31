@@ -166,9 +166,11 @@ export const deletePost =
   async (dispatch: CallableFunction) => {
     console.log({ post, auth });
     dispatch({ type: postTypes.DELETE_POST, payload: post });
-
+    const imgName = post.image.split('/')[4];
     try {
       const res = await deleteDataApi(`post/${post._id}`, auth.token);
+
+      await deleteDataApi(`delete/${imgName}`, auth.token);
     } catch (err: any) {
       dispatch({
         type: allTypes.ALERT,
