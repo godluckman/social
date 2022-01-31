@@ -3,7 +3,7 @@ import CommentModel from '../model/commentModel';
 import PostModel from '../model/postModel';
 
 const commentController = {
-  createComment: async (req: any, res: Response) => {
+  addComment: async (req: any, res: Response) => {
     try {
       const { postId, content, tag, reply, postUserId } = req.body;
       const post = await PostModel.findById(postId);

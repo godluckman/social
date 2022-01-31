@@ -1,22 +1,15 @@
 import { Request, Response } from 'express';
 import PostModel from '../model/postModel';
 import CommentModel from '../model/commentModel';
+import PostService from '../services/postService';
 
 const postController = {
   createPost: async (req: Request, res: Response) => {
     try {
       const { content, auth, image } = req.body;
-
       if (!image)
         return res.status(400).json({ msg: 'Please add your photo.' });
-
-      const newPost = new PostModel({
-        content,
-        image,
-        user: auth.user._id,
-      });
-      await newPost.save();
-
+      const newPost = await PostService.addPost(content, image, auth.user._id);
       res.json({
         msg: 'Created Post!',
         newPost: {
@@ -31,26 +24,10 @@ const postController = {
   },
   getPosts: async (req: any, res: Response) => {
     try {
-      const posts = await PostModel.find({
-        user: [...req.user.following, req.user._id],
-      })
-        .sort('-createdAt')
-        .populate('user likes', 'avatar username fullName followers')
-        .populate({
-          path: 'comments',
-          populate: {
-            path: 'user likes',
-            select: '-password',
-          },
-        });
-
-      // const features = new APIfeatures(Posts.find({
-      //   user: [...req.user.following, req.user._id]
-      // }), req.query).paginating()
-      // const posts = await features.query
-      //   .sort('-createdAt')
-      //   .populate('user likes', 'avatar username fullName followers')
-
+      const posts = await PostService.getPosts(
+        req.user.following,
+        req.user._id
+      );
       res.json({
         msg: 'Success!',
         result: posts.length,
@@ -64,22 +41,7 @@ const postController = {
   updatePost: async (req: any, res: Response) => {
     try {
       const { content, image } = req.body;
-      const post = await PostModel.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          content,
-          image,
-        }
-      )
-        .populate('user likes', 'avatar username fullName')
-        .populate({
-          path: 'comments',
-          populate: {
-            path: 'user likes',
-            select: '-password',
-          },
-        });
-
+      const post = await PostService.updatePost(req.params.id, content, image);
       res.json({
         msg: 'Updated Post!',
         newPost: {
@@ -95,20 +57,12 @@ const postController = {
   },
   likePost: async (req: any, res: Response) => {
     try {
-      const post = await PostModel.find({
-        _id: req.params.id,
-        likes: req.user._id,
-      });
+      const { post, like } = await PostService.likePost(
+        req.params.id,
+        req.user._id
+      );
       if (post.length > 0)
         return res.status(400).json({ msg: 'You liked this post.' });
-
-      const like = await PostModel.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          $push: { likes: req.user._id },
-        },
-        { new: true }
-      );
       if (!like)
         return res.status(400).json({ msg: 'This post does not exist.' });
       res.json({ msg: 'Liked Post!' });
@@ -119,17 +73,9 @@ const postController = {
   },
   unLikePost: async (req: any, res: Response) => {
     try {
-      const like = await PostModel.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          $pull: { likes: req.user._id },
-        },
-        { new: true }
-      );
-
+      const like = await PostService.unLikePost(req.params.id, req.user._id);
       if (!like)
         return res.status(400).json({ msg: 'This post does not exist.' });
-
       res.json({ msg: 'UnLiked Post!' });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });
@@ -138,13 +84,7 @@ const postController = {
   },
   getUserPosts: async (req: any, res: Response) => {
     try {
-      const posts = await PostModel.find({ user: req.params.id }).sort(
-        '-createdAt'
-      );
-      // const features = new APIfeatures(Posts.find({user: req.params.id}), req.query)
-      //   .paginating()
-      // const posts = await features.query.sort("-createdAt")
-      //
+      const posts = await PostService.getUserPosts(req.params.id);
       res.json({
         posts,
         result: posts.length,
@@ -156,19 +96,9 @@ const postController = {
   },
   getPost: async (req: any, res: Response) => {
     try {
-      const post = await PostModel.findById(req.params.id)
-        .populate('user likes', 'avatar username fullName followers')
-        .populate({
-          path: 'comments',
-          populate: {
-            path: 'user likes',
-            select: '-password',
-          },
-        });
-
+      const post = await PostService.getPost(req.params.id);
       if (!post)
         return res.status(400).json({ msg: 'This post does not exist.' });
-
       res.json({
         post,
       });
@@ -179,12 +109,7 @@ const postController = {
   },
   deletePost: async (req: any, res: Response) => {
     try {
-      const post = await PostModel.findOneAndDelete({
-        _id: req.params.id,
-        user: req.user._id,
-      });
-      await CommentModel.deleteMany({ _id: { $in: post.comments } });
-
+      const post = await PostService.deletePost(req.params.id, req.user._id);
       res.json({
         msg: 'Deleted Post!',
         newPost: {
