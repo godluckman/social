@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import PostModel from '../model/postModel';
+import CommentModel from '../model/commentModel';
 
 const postController = {
   createPost: async (req: Request, res: Response) => {
@@ -170,6 +171,26 @@ const postController = {
 
       res.json({
         post,
+      });
+    } catch (err) {
+      return res.status(500).json({ msg: (err as Error).message });
+    }
+    return null;
+  },
+  deletePost: async (req: any, res: Response) => {
+    try {
+      const post = await PostModel.findOneAndDelete({
+        _id: req.params.id,
+        user: req.user._id,
+      });
+      await CommentModel.deleteMany({ _id: { $in: post.comments } });
+
+      res.json({
+        msg: 'Deleted Post!',
+        newPost: {
+          ...post,
+          user: req.user,
+        },
       });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });

@@ -1,5 +1,5 @@
 import { postTypes } from '../actions/postAction';
-import { editData } from '../actions/allTypes';
+import { deleteData, editData } from '../actions/allTypes';
 
 const initialState = {
   loading: false,
@@ -35,6 +35,11 @@ const postReducer = (
       return {
         ...state,
         posts: editData(state.posts, action.payload._id, action.payload),
+      };
+    case postTypes.DELETE_POST:
+      return {
+        ...state,
+        posts: deleteData(state.posts, action.payload._id),
       };
     default:
       return state;
