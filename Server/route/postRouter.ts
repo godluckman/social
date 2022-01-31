@@ -8,6 +8,7 @@ router.post('/posts', auth, postController.createPost);
 router.get('/posts', auth, postController.getPosts);
 router.patch('/post/:id', auth, postController.updatePost);
 router.get('/post/:id', auth, postController.getPost);
+router.delete('/post/:id', auth, postController.deletePost);
 router.patch('/post/:id/like', auth, postController.likePost);
 router.patch('/post/:id/unlike', auth, postController.unLikePost);
 router.get('/user_posts/:id', auth, postController.getUserPosts);

@@ -1,16 +1,28 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import Avatar from '../../avatar';
 import { IState } from '../../profile/Following';
 import { allTypes } from '../../../redux/actions/allTypes';
+import { deletePost } from '../../../redux/actions/postAction';
 
 const CardHeader = ({ post }: any) => {
   const { auth } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleEditPost = () => {
     dispatch({ type: allTypes.STATUS, payload: { ...post, onEdit: true } });
+  };
+  const handleDeletePost = () => {
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      dispatch(deletePost({ post, auth }));
+      navigate('/');
+    }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(`http://localhost:3000/post/${post._id}`);
   };
 
   return (
@@ -50,13 +62,21 @@ const CardHeader = ({ post }: any) => {
               >
                 <span className='material-icons'>create</span> Edit Post
               </div>
-              <div className='dropdown-item'>
+              <div
+                className='dropdown-item'
+                onClick={handleDeletePost}
+                onKeyUp={handleDeletePost}
+              >
                 <span className='material-icons'>delete_outline</span> Remove
                 Post
               </div>
             </>
           )}
-          <div className='dropdown-item'>
+          <div
+            className='dropdown-item'
+            onClick={handleCopyLink}
+            onKeyUp={handleCopyLink}
+          >
             <span className='material-icons'>content_copy</span> Copy Link
           </div>
         </div>

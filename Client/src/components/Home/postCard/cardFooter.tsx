@@ -12,6 +12,8 @@ export interface IStateAT extends IState {
 const CardFooter = ({ post }: any) => {
   const [isLike, setIsLike] = useState(false);
   const [loadLike, setLoadLike] = useState(false);
+  const [isShare, setIsShare] = useState(false);
+  const [saved, setSaved] = useState(false);
   const { auth, theme } = useSelector((state: IStateAT) => state);
   const dispatch = useDispatch();
 
@@ -42,19 +44,36 @@ const CardFooter = ({ post }: any) => {
   return (
     <div className='card_footer'>
       <div className='card_icon_menu'>
-        <LikeButton
-          isLike={isLike}
-          handleLike={handleLike}
-          handleUnLike={handleUnLike}
-        />
         <div>
-          <span className='material-icons'>favorite_border</span>
-          <span className='material-icons'>bookmark_border</span>
+          <LikeButton
+            isLike={isLike}
+            handleLike={handleLike}
+            handleUnLike={handleUnLike}
+          />
           <Link to={`/post/${post._id}`} className='text-dark m-0'>
-            <i className='far fa-comment' style={{ fontSize: '24px' }} />
+            <i className='far fa-comment' style={{ fontSize: '28px' }} />
           </Link>
+          <i
+            className='fas fa-paper-plane'
+            onClick={() => setIsShare(!isShare)}
+            onKeyUp={() => setIsShare(!isShare)}
+          />
         </div>
+        {saved ? (
+          <i
+            className='fas fa-bookmark text-info'
+            onClick={() => setSaved(false)}
+            onKeyUp={() => setSaved(false)}
+          />
+        ) : (
+          <i
+            className='far fa-bookmark'
+            onClick={() => setSaved(true)}
+            onKeyUp={() => setSaved(true)}
+          />
+        )}
       </div>
+
       <div className='d-flex justify-content-between'>
         <h6 style={{ padding: '0 25px', cursor: 'pointer' }}>
           {post.likes.length} likes

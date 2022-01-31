@@ -1,7 +1,12 @@
 import { IUser } from './profileAction';
 import { allTypes } from './allTypes';
 import { imageUpload } from '../utils/imageUpload';
-import { getDataApi, patchDataApi, postDataApi } from '../utils/fetchData';
+import {
+  deleteDataApi,
+  getDataApi,
+  patchDataApi,
+  postDataApi,
+} from '../utils/fetchData';
 
 export const postTypes = {
   CREATE_POST: 'CREATE_POST',
@@ -153,5 +158,21 @@ export const getPost =
           payload: { error: err.response.data.msg },
         });
       }
+    }
+  };
+
+export const deletePost =
+  ({ post, auth }: any) =>
+  async (dispatch: CallableFunction) => {
+    console.log({ post, auth });
+    dispatch({ type: postTypes.DELETE_POST, payload: post });
+
+    try {
+      const res = await deleteDataApi(`post/${post._id}`, auth.token);
+    } catch (err: any) {
+      dispatch({
+        type: allTypes.ALERT,
+        payload: { error: err.response.data.msg },
+      });
     }
   };
