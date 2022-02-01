@@ -1,14 +1,10 @@
 import { Request, Response } from 'express';
-import UserModel from '../model/userModel';
+import UserService from '../services/userService';
 
 const userController = {
   searchUser: async (req: Request, res: Response) => {
     try {
-      const users = await UserModel.find({
-        userName: { $regex: req.query.userName },
-      })
-        .limit(10)
-        .select('fullName userName avatar');
+      const users = await UserService.findUser(req.query.userName);
       res.json({ users });
     } catch (e) {
       return res.status(500).json({ msg: (e as Error).message });
@@ -17,9 +13,7 @@ const userController = {
   },
   getUser: async (req: Request, res: Response) => {
     try {
-      const user = await UserModel.findById(req.params.id)
-        .select('-password')
-        .populate('followers following', '-password');
+      const user = await UserService.getUser(req.params.id);
       if (!user) return res.status(400).json({ msg: 'User does not exist.' });
       res.json({ user });
     } catch (e) {
@@ -32,17 +26,14 @@ const userController = {
       const { avatar, fullName, mobile, address, story, gender } = req.body;
       if (!fullName)
         return res.status(400).json({ msg: 'Please add your full name.' });
-
-      await UserModel.findOneAndUpdate(
-        { _id: req.body._id },
-        {
-          avatar,
-          fullName,
-          mobile,
-          address,
-          story,
-          gender,
-        }
+      await UserService.updateUser(
+        req.body._id,
+        avatar,
+        fullName,
+        mobile,
+        address,
+        story,
+        gender
       );
       res.json({ msg: 'Update Success!' });
     } catch (e) {
@@ -52,21 +43,9 @@ const userController = {
   },
   follow: async (req: any, res: Response) => {
     try {
-      const user = await UserModel.find({
-        _id: req.params.id,
-        followers: req.body._id,
-      });
+      const user = await UserService.findUserF(req.params.id, req.body._id);
       if (user.length > 0) return res.status(500).json({ msg: 'Followed' });
-      await UserModel.findOneAndUpdate(
-        { _id: req.params.id },
-        { $push: { followers: req.body._id } },
-        { new: true }
-      );
-      await UserModel.findOneAndUpdate(
-        { _id: req.body._id },
-        { $push: { following: req.params.id } },
-        { new: true }
-      );
+      await UserService.followUser(req.params.id, req.body._id);
       res.json({ msg: 'Followed user.' });
     } catch (e) {
       return res.status(500).json({ msg: (e as Error).message });
@@ -75,21 +54,10 @@ const userController = {
   },
   unfollow: async (req: any, res: Response) => {
     try {
-      const newUser = await UserModel.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          $pull: { followers: req.body._id },
-        },
-        { new: true }
-      ).populate('followers following', '-password');
-      await UserModel.findOneAndUpdate(
-        { _id: req.body._id },
-        {
-          $pull: { following: req.params.id },
-        },
-        { new: true }
+      const newUser = await UserService.unfollowUser(
+        req.params.id,
+        req.body._id
       );
-
       res.json({ newUser });
     } catch (e) {
       return res.status(500).json({ msg: (e as Error).message });

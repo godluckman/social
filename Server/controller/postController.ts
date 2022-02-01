@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import PostModel from '../model/postModel';
-import CommentModel from '../model/commentModel';
 import PostService from '../services/postService';
 
 const postController = {

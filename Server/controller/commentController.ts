@@ -1,35 +1,27 @@
 import { Response } from 'express';
-import CommentModel from '../model/commentModel';
-import PostModel from '../model/postModel';
+import PostService from '../services/postService';
+import CommentService from '../services/commentService';
 
 const commentController = {
   addComment: async (req: any, res: Response) => {
     try {
       const { postId, content, tag, reply, postUserId } = req.body;
-      const post = await PostModel.findById(postId);
+      const post = await PostService.getPost(postId);
       if (!post)
         return res.status(400).json({ msg: 'This post does not exist.' });
       if (reply) {
-        const cm = await CommentModel.findById(reply);
-        if (!cm)
+        const comment = await CommentService.getComment(reply);
+        if (!comment)
           return res.status(400).json({ msg: 'This comment does not exist.' });
       }
-      const newComment = new CommentModel({
-        user: req.user._id,
+      const newComment = await CommentService.addComment(
+        req.user._id,
+        postId,
+        reply,
         content,
         tag,
-        reply,
-        postUserId,
-        postId,
-      });
-      await PostModel.findOneAndUpdate(
-        { _id: postId },
-        {
-          $push: { comments: newComment._id },
-        },
-        { new: true }
+        postUserId
       );
-      await newComment.save();
       res.json({ newComment });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });
@@ -39,15 +31,7 @@ const commentController = {
   updateComment: async (req: any, res: Response) => {
     try {
       const { content } = req.body;
-
-      await CommentModel.findOneAndUpdate(
-        {
-          _id: req.params.id,
-          user: req.user._id,
-        },
-        { content }
-      );
-
+      await CommentService.updateComment(req.params.id, req.user._id, content);
       res.json({ msg: 'Update Success!' });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });
@@ -56,21 +40,13 @@ const commentController = {
   },
   likeComment: async (req: any, res: Response) => {
     try {
-      const comment = await CommentModel.find({
-        _id: req.params.id,
-        likes: req.user._id,
-      });
+      const comment = await CommentService.checkLike(
+        req.params.id,
+        req.user._id
+      );
       if (comment.length > 0)
         return res.status(400).json({ msg: 'You liked this post.' });
-
-      await CommentModel.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          $push: { likes: req.user._id },
-        },
-        { new: true }
-      );
-
+      await CommentService.likeComment(req.params.id, req.user._id);
       res.json({ msg: 'Liked Comment!' });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });
@@ -79,14 +55,7 @@ const commentController = {
   },
   unLikeComment: async (req: any, res: Response) => {
     try {
-      await CommentModel.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          $pull: { likes: req.user._id },
-        },
-        { new: true }
-      );
-
+      await CommentService.unLikeComment(req.params.id, req.user._id);
       res.json({ msg: 'UnLiked Comment!' });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });
@@ -95,18 +64,7 @@ const commentController = {
   },
   deleteComment: async (req: any, res: Response) => {
     try {
-      const comment = await CommentModel.findOneAndDelete({
-        _id: req.params.id,
-        $or: [{ user: req.user._id }, { postUserId: req.user._id }],
-      });
-
-      await PostModel.findOneAndUpdate(
-        { _id: comment.postId },
-        {
-          $pull: { comments: req.params.id },
-        }
-      );
-
+      await CommentService.deleteComment(req.params.id, req.user._id);
       res.json({ msg: 'Deleted!' });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });
