@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { IStateAT } from '../Home/postCard/cardFooter';
+import { IStateAT } from '../post/postCard/cardFooter';
 import { createComment } from '../../redux/actions/commentAction';
 
 const InputComment = ({ children, post, onReply, setOnReply }: any) => {

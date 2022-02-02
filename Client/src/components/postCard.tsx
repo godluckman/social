@@ -1,6 +1,6 @@
-import CardHeader from './Home/postCard/cardHeader';
-import CardBody from './Home/postCard/cardBody';
-import CardFooter from './Home/postCard/cardFooter';
+import CardHeader from './post/postCard/cardHeader';
+import CardBody from './post/postCard/cardBody';
+import CardFooter from './post/postCard/cardFooter';
 import Comments from './comment/comments';
 import InputComment from './comment/inputComment';
 

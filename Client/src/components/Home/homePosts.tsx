@@ -9,7 +9,7 @@ interface IState extends DefaultRootState {
   theme: boolean;
 }
 
-const HPosts = () => {
+const HomePosts = () => {
   const { homePosts, auth, theme } = useSelector((state: IState) => state);
   return (
     <div className='posts'>
@@ -20,4 +20,4 @@ const HPosts = () => {
   );
 };
 
-export default HPosts;
+export default HomePosts;
