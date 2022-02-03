@@ -3,12 +3,16 @@ import bcrypt from 'bcrypt';
 import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import UserModel from '../model/userModel';
 
+interface IPayload {
+  id: string;
+}
+
 const accessSecret = '123secretaccess';
 const refreshSecret = 'secretrefresh123';
 
-const createAccessToken: CallableFunction = (payload: any) =>
+const createAccessToken: CallableFunction = (payload: IPayload) =>
   jwt.sign(payload, accessSecret, { expiresIn: '1d' });
-const createRefreshToken: CallableFunction = (payload: any) =>
+const createRefreshToken: CallableFunction = (payload: IPayload) =>
   jwt.sign(payload, refreshSecret, { expiresIn: '30d' });
 
 const Auth = {
@@ -38,8 +42,8 @@ const Auth = {
         gender,
       });
 
-      const accessToken = createAccessToken({ id: newUser._id });
-      const refreshToken = createRefreshToken({ id: newUser._id });
+      const accessToken = `Bearer ${createAccessToken({ id: newUser._id })}`;
+      const refreshToken = `Bearer ${createRefreshToken({ id: newUser._id })}`;
 
       res.cookie('refreshtoken', refreshToken, {
         httpOnly: true,
@@ -70,8 +74,8 @@ const Auth = {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ msg: 'Wrong password' });
 
-      const accessToken = createAccessToken({ id: user._id });
-      const refreshToken = createRefreshToken({ id: user._id });
+      const accessToken = `Bearer ${createAccessToken({ id: user._id })}`;
+      const refreshToken = `Bearer ${createRefreshToken({ id: user._id })}`;
 
       res.cookie('refreshtoken', refreshToken, {
         httpOnly: true,
@@ -99,7 +103,7 @@ const Auth = {
   },
   generateAccessToken: async (req: Request, res: Response) => {
     try {
-      const refreshToken = req.cookies.refreshtoken;
+      const refreshToken = req.cookies.refreshtoken.split(' ')[1];
       if (!refreshToken)
         return res.status(400).json({ msg: 'You must log in' });
       jwt.verify(
@@ -112,7 +116,7 @@ const Auth = {
             .select('-password')
             .populate('followers following', '-password');
           if (!user) return res.status(400).json({ msg: 'Does not exist' });
-          const accessToken = createAccessToken({ id: result?.id });
+          const accessToken = `Bearer ${createAccessToken({ id: result?.id })}`;
           res.json({ accessToken, user });
           return null;
         }

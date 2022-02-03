@@ -41,7 +41,7 @@ const userController = {
     }
     return null;
   },
-  follow: async (req: any, res: Response) => {
+  follow: async (req: Request, res: Response) => {
     try {
       const user = await UserService.findUserF(req.params.id, req.body._id);
       if (user.length > 0) return res.status(500).json({ msg: 'Followed' });
@@ -52,7 +52,7 @@ const userController = {
     }
     return null;
   },
-  unfollow: async (req: any, res: Response) => {
+  unfollow: async (req: Request, res: Response) => {
     try {
       const newUser = await UserService.unfollowUser(
         req.params.id,

@@ -1,4 +1,4 @@
-import { postDataApi } from '../utils/fetchData';
+import { postDataApi } from '../utils/fetch';
 import { allTypes as AllTypes } from './allTypes';
 import valid, { IErr } from '../utils/valid';
 

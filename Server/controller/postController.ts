@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import PostService from '../services/postService';
+import UserService from '../services/userService';
 
 const postController = {
   createPost: async (req: Request, res: Response) => {
@@ -20,12 +21,11 @@ const postController = {
     }
     return null;
   },
-  getPosts: async (req: any, res: Response) => {
+  getPosts: async (req: Request, res: Response) => {
     try {
-      const posts = await PostService.getPosts(
-        req.user.following,
-        req.user._id
-      );
+      const authId = res.getHeader('x-userid')!.toString();
+      const user = await UserService.getUser(authId);
+      const posts = await PostService.getPosts(user.following, user._id);
       res.json({
         msg: 'Success!',
         result: posts.length,
@@ -36,7 +36,7 @@ const postController = {
     }
     return null;
   },
-  updatePost: async (req: any, res: Response) => {
+  updatePost: async (req: Request, res: Response) => {
     try {
       const { content, image } = req.body;
       const post = await PostService.updatePost(req.params.id, content, image);
@@ -53,34 +53,33 @@ const postController = {
     }
     return null;
   },
-  likePost: async (req: any, res: Response) => {
+  likePost: async (req: Request, res: Response) => {
     try {
-      const { post, like } = await PostService.likePost(
-        req.params.id,
-        req.user._id
-      );
+      const authId = res.getHeader('x-userid')!.toString();
+      const { post, like } = await PostService.likePost(req.params.id, authId);
       if (post.length > 0)
-        return res.status(400).json({ msg: 'You liked this post.' });
+        return res.status(400).json({ msg: 'Already liked!' });
       if (!like)
-        return res.status(400).json({ msg: 'This post does not exist.' });
+        return res.status(404).json({ msg: 'This post does not exist.' });
       res.json({ msg: 'Liked Post!' });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });
     }
     return null;
   },
-  unLikePost: async (req: any, res: Response) => {
+  unLikePost: async (req: Request, res: Response) => {
     try {
-      const like = await PostService.unLikePost(req.params.id, req.user._id);
+      const authId = res.getHeader('x-userid')!.toString();
+      const like = await PostService.unLikePost(req.params.id, authId);
       if (!like)
-        return res.status(400).json({ msg: 'This post does not exist.' });
+        return res.status(404).json({ msg: 'This post does not exist.' });
       res.json({ msg: 'UnLiked Post!' });
     } catch (err) {
       return res.status(500).json({ msg: (err as Error).message });
     }
     return null;
   },
-  getUserPosts: async (req: any, res: Response) => {
+  getUserPosts: async (req: Request, res: Response) => {
     try {
       const posts = await PostService.getUserPosts(req.params.id);
       res.json({
@@ -92,7 +91,7 @@ const postController = {
     }
     return null;
   },
-  getPost: async (req: any, res: Response) => {
+  getPost: async (req: Request, res: Response) => {
     try {
       const post = await PostService.getPost(req.params.id);
       if (!post)
@@ -105,14 +104,16 @@ const postController = {
     }
     return null;
   },
-  deletePost: async (req: any, res: Response) => {
+  deletePost: async (req: Request, res: Response) => {
     try {
-      const post = await PostService.deletePost(req.params.id, req.user._id);
+      const authId = res.getHeader('x-userid')!.toString();
+      const user = await UserService.getUser(authId);
+      const post = await PostService.deletePost(req.params.id, user._id);
       res.json({
         msg: 'Deleted Post!',
         newPost: {
           ...post,
-          user: req.user,
+          user,
         },
       });
     } catch (err) {

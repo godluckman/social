@@ -6,7 +6,7 @@ import {
   getDataApi,
   patchDataApi,
   postDataApi,
-} from '../utils/fetchData';
+} from '../utils/fetch';
 
 export const postTypes = {
   CREATE_POST: 'CREATE_POST',
