@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import UserModel from '../model/userModel';
+import authService from '../services/authService';
+import userService from '../services/userService';
 
 interface IPayload {
   id: string;
@@ -20,8 +22,8 @@ const Auth = {
     try {
       const { fullName, userName, email, password, gender } = req.body;
       const newUserName = userName.toLowerCase().replace(/ /g, '');
-      const userNameFind = await UserModel.findOne({ userName: newUserName });
-      const userEmailFind = await UserModel.findOne({ email });
+      const userNameFind = await authService.checkNewUserName(newUserName);
+      const userEmailFind = await authService.checkNewUserEmail(email);
       if (userNameFind) {
         return res.status(400).json({ msg: 'This username already exists' });
       }
@@ -66,10 +68,7 @@ const Auth = {
   login: async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-      const user = await UserModel.findOne({ email }).populate(
-        'followers following',
-        '-password'
-      );
+      const user = await authService.login(email);
       if (!user) return res.status(400).json({ msg: 'Email does not exist' });
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ msg: 'Wrong password' });
@@ -111,10 +110,7 @@ const Auth = {
         refreshSecret,
         async (err: VerifyErrors | null, result: JwtPayload | undefined) => {
           if (err) return res.status(400).json({ msg: 'You must log in' });
-
-          const user = await UserModel.findById(result?.id)
-            .select('-password')
-            .populate('followers following', '-password');
+          const user = await userService.getUser(result?.id);
           if (!user) return res.status(400).json({ msg: 'Does not exist' });
           const accessToken = `Bearer ${createAccessToken({ id: result?.id })}`;
           res.json({ accessToken, user });
