@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IThemeState } from './likeButton';
-import { IPost } from '../redux/actions/commentAction';
+import { IThemeState } from '../likeButton';
+import { IPost } from '../../redux/actions/commentAction';
 
-const PostT = ({ posts, result }: any) => {
+const PostMiniCard = ({ posts, result }: any) => {
   const { theme } = useSelector((state: IThemeState) => state);
   if (result === 0) return <h2 className='text-center text-danger'>No Post</h2>;
   return (
@@ -28,4 +28,4 @@ const PostT = ({ posts, result }: any) => {
   );
 };
 
-export default PostT;
+export default PostMiniCard;

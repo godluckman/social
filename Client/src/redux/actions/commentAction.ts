@@ -1,6 +1,6 @@
 import { allTypes, deleteData, editData } from './allTypes';
 import { postTypes } from './postAction';
-import { deleteDataApi, patchDataApi, postDataApi } from '../utils/fetchData';
+import { deleteDataApi, patchDataApi, postDataApi } from '../utils/fetch';
 import { IUser } from './profileAction';
 
 export interface IComment {

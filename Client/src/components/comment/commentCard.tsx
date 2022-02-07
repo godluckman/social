@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Avatar from '../avatar';
-import { IStateAT } from '../Home/postCard/cardFooter';
+import { IStateAT } from '../post/postCard/cardFooter';
 import { LikeButton } from '../likeButton';
 import CommentMenu from './commentMenu';
 import {

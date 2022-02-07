@@ -1,4 +1,4 @@
-import { getDataApi, patchDataApi } from '../utils/fetchData';
+import { getDataApi, patchDataApi } from '../utils/fetch';
 import { allTypes, deleteData } from './allTypes';
 import { imageUpload } from '../utils/imageUpload';
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import PostT from '../postT';
+import PostMiniCard from '../post/postMiniCard';
 
-const Posts = ({ profile, auth, dispatch, id }: any) => {
+const Posts = ({ profile, id }: any) => {
   const [posts, setPosts] = useState([]);
   const [result, setResult] = useState(9);
   const [page, setPage] = useState(0);
@@ -17,7 +17,7 @@ const Posts = ({ profile, auth, dispatch, id }: any) => {
   }, [profile.posts, id]);
   return (
     <div>
-      <PostT posts={posts} result={result} />
+      <PostMiniCard posts={posts} result={result} />
       {load && (
         <div
           className='spinner-border text-secondary'

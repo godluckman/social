@@ -1,7 +1,7 @@
 import React from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 import { IUser } from '../../redux/actions/profileAction';
-import PostCard from '../postCard';
+import PostCard from '../post/postCard';
 
 interface IState extends DefaultRootState {
   homePosts: { loading: boolean; result: number; page: number; posts: any[] };
@@ -9,8 +9,8 @@ interface IState extends DefaultRootState {
   theme: boolean;
 }
 
-const HPosts = () => {
-  const { homePosts, auth, theme } = useSelector((state: IState) => state);
+const HomePosts = () => {
+  const { homePosts, theme } = useSelector((state: IState) => state);
   return (
     <div className='posts'>
       {homePosts.posts.map((post) => (
@@ -20,4 +20,4 @@ const HPosts = () => {
   );
 };
 
-export default HPosts;
+export default HomePosts;

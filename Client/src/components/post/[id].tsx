@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import PostCard from '../postCard';
+import PostCard from './postCard';
 import { getPost } from '../../redux/actions/postAction';
 
 const Post = () => {

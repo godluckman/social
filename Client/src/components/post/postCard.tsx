@@ -1,8 +1,8 @@
-import CardHeader from './Home/postCard/cardHeader';
-import CardBody from './Home/postCard/cardBody';
-import CardFooter from './Home/postCard/cardFooter';
-import Comments from './comment/comments';
-import InputComment from './comment/inputComment';
+import CardHeader from './postCard/cardHeader';
+import CardBody from './postCard/cardBody';
+import CardFooter from './postCard/cardFooter';
+import Comments from '../comment/comments';
+import InputComment from '../comment/inputComment';
 
 const PostCard = ({ post, theme }: any) => (
   <div className='card my-3'>

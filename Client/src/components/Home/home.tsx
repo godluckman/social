@@ -1,7 +1,7 @@
 import React from 'react';
 import { DefaultRootState, useSelector } from 'react-redux';
 import Status from './Status';
-import HPosts from './HPosts';
+import HomePosts from './homePosts';
 
 interface IState extends DefaultRootState {
   homePosts: { loading: boolean; result: number; page: number; posts: any[] };
@@ -26,7 +26,7 @@ const Home = () => {
         ) : homePosts.result === 0 && homePosts.posts.length === 0 ? (
           <h2 className='text-center'>No Posts</h2>
         ) : (
-          <HPosts />
+          <HomePosts />
         )}
       </div>
       <div className='col-md-4' />
