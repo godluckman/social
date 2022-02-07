@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import PostMiniCard from '../postMiniCard';
+import PostMiniCard from '../post/postMiniCard';
 
-const Posts = ({ profile, auth, dispatch, id }: any) => {
+const Posts = ({ profile, id }: any) => {
   const [posts, setPosts] = useState([]);
   const [result, setResult] = useState(9);
   const [page, setPage] = useState(0);

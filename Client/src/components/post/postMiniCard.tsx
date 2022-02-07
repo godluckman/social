@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IThemeState } from './likeButton';
-import { IPost } from '../redux/actions/commentAction';
+import { IThemeState } from '../likeButton';
+import { IPost } from '../../redux/actions/commentAction';
 
 const PostMiniCard = ({ posts, result }: any) => {
   const { theme } = useSelector((state: IThemeState) => state);
