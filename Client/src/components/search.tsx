@@ -39,13 +39,14 @@ const Search = () => {
   };
 
   return (
-    <form className='searchForm' onSubmit={handleSearch}>
+    <form className='searchForm' onInput={handleSearch}>
       <input
         type='text'
         name='search'
         id='search'
-        title='Enter to Search'
+        title='Search'
         value={search}
+        autoComplete='off'
         onChange={(event) =>
           setSearch(event.target.value.toLowerCase().replace(/ /g, ''))
         }
