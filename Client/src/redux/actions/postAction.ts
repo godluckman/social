@@ -36,7 +36,9 @@ export const createPost =
       dispatch({ type: allTypes.ALERT, payload: { loading: true } });
       if (image) media = await imageUpload(image);
       const imgName = media.img.split('\\');
-      const imgGet = `http://localhost:3100/images/${imgName[4]}`;
+      const imgGet = `http://localhost:3100/images/${
+        imgName[imgName.length - 1]
+      }`;
       const res = await postDataApi(
         'posts',
         { content, auth, image: imgGet },
@@ -88,7 +90,7 @@ export const updatePost =
       if (image.name) {
         media = await imageUpload(image);
         const imgName = media.img.split('\\');
-        imgGet = `http://localhost:3100/images/${imgName[4]}`;
+        imgGet = `http://localhost:3100/images/${imgName[imgName.length - 1]}`;
       }
       const res = await patchDataApi(
         `post/${status._id}`,
