@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Avatar from './avatar';
 
 export interface IUser {
@@ -22,7 +23,13 @@ const UserCard = ({
   setShowFollowing,
 }: Prop) => (
   <div className='d-flex p-2 align-items-center'>
-    <Avatar src={user.avatar} size='avatar' />
+    <Link
+      to={`/profile/${user._id}`}
+      className='text-dark'
+      onClick={() => setShowFollowers!(false)}
+    >
+      <Avatar src={user.avatar} size='avatar' />
+    </Link>
     <div className='m-lg-1'>
       <span className='d-block'>{user.userName}</span>
       <small>{user.fullName}</small>

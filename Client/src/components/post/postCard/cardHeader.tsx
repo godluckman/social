@@ -6,8 +6,13 @@ import Avatar from '../../avatar';
 import { IState } from '../../profile/Following';
 import { allTypes } from '../../../redux/actions/allTypes';
 import { deletePost } from '../../../redux/actions/postAction';
+import { IPost } from '../../../redux/actions/commentAction';
 
-const CardHeader = ({ post }: any) => {
+interface IProp {
+  post: IPost;
+}
+
+const CardHeader = ({ post }: IProp) => {
   const { auth } = useSelector((state: IState) => state);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,14 +27,22 @@ const CardHeader = ({ post }: any) => {
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`http://localhost:3000/post/${post._id}`);
+    navigator.clipboard
+      .writeText(`http://localhost:3000/post/${post._id}`)
+      .then(() =>
+        dispatch({
+          type: allTypes.ALERT,
+          payload: { success: 'Copied to clipboard.' },
+        })
+      );
   };
 
   return (
     <div className='card_header'>
       <div className='d-flex'>
-        <Avatar src={post.user.avatar} size='avatar-medium' />
-
+        <Link to={`/profile/${post.user._id}`} className='text-dark'>
+          <Avatar src={post.user.avatar} size='avatar-medium' />
+        </Link>
         <div className='card_name mx-3'>
           <h6 className='m-0'>
             <Link to={`/profile/${post.user._id}`} className='text-dark'>
