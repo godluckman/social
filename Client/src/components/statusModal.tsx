@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { allTypes } from '../redux/actions/allTypes';
 import { IState } from './profile/Following';
 import { createPost, updatePost } from '../redux/actions/postAction';
+import useOutsideClose from './customHooks/useOutsideClose';
 
 interface IStatusState extends IState {
   theme: boolean;
@@ -12,7 +13,8 @@ interface IStatusState extends IState {
 const StatusModal = () => {
   const { auth, theme, status } = useSelector((state: IStatusState) => state);
   const dispatch = useDispatch();
-
+  const Ref = useRef(null);
+  useOutsideClose(Ref);
   const [content, setContent] = useState('');
   const [images, setImages] = useState<any[]>([]);
 
@@ -72,7 +74,7 @@ const StatusModal = () => {
 
   return (
     <div className='status_modal'>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} ref={Ref}>
         <div className='status_header'>
           <h5 className='m-0'>Create Post</h5>
           <span
